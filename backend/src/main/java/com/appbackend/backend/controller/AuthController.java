@@ -1,7 +1,7 @@
 package com.appbackend.backend.controller;
 
 import com.appbackend.backend.dto.*;
-import com.appbackend.backend.service.AuthService;
+import com.appbackend.backend.service.auth.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

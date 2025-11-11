@@ -1,4 +1,4 @@
-package com.appbackend.backend.service;
+package com.appbackend.backend.service.auth;
 
 import com.appbackend.backend.entity.OtpCode;
 import com.appbackend.backend.repository.OtpRepository;

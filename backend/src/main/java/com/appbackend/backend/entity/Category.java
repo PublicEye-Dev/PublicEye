@@ -13,6 +13,6 @@ public class Category {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = false)
+    @JoinColumn(name = "department_id")
     private Department department;
 }
