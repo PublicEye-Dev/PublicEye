@@ -1,4 +1,4 @@
-package com.appbackend.backend.service;
+package com.appbackend.backend.service.auth;
 
 import com.appbackend.backend.entity.User;
 import com.appbackend.backend.enums.Role;
