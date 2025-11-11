@@ -3,12 +3,15 @@ package com.appbackend.backend.service.admin;
 import com.appbackend.backend.dto.CategoryCreateRequest;
 import com.appbackend.backend.dto.DepartmentCreateRequest;
 import com.appbackend.backend.dto.DepartmentOperatorCreateRequest;
+import com.appbackend.backend.dto.SubcategoryCreateRequest;
 import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.entity.Department;
+import com.appbackend.backend.entity.Subcategory;
 import com.appbackend.backend.entity.User;
 import com.appbackend.backend.enums.Role;
 import com.appbackend.backend.repository.CategoryRepository;
 import com.appbackend.backend.repository.DepartmentRepository;
+import com.appbackend.backend.repository.SubcategoryRepository;
 import com.appbackend.backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final DepartmentRepository departmentRepository;
     private final CategoryRepository categoryRepository;
+    private final SubcategoryRepository subcategoryRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -69,7 +73,7 @@ public class AdminServiceImpl implements AdminService {
                 throw new IllegalArgumentException("Categoria există deja pentru departamentul selectat");
             }
         } else {
-            if (categoryRepository.existsByNameIgnoreCase(request.name())) {
+            if (categoryRepository.findByName(request.name()).isPresent()) {
                 throw new IllegalArgumentException("Categoria există deja");
             }
         }
@@ -79,6 +83,25 @@ public class AdminServiceImpl implements AdminService {
         category.setDepartment(department);
 
         return categoryRepository.save(category);
+    }
+
+    @Override
+    @Transactional
+    public Subcategory createSubcategory(SubcategoryCreateRequest request) {
+        Category category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoria nu există"));
+
+        if (subcategoryRepository.existsByNameIgnoreCaseAndCategoryId(request.name(), request.categoryId())) {
+            throw new IllegalArgumentException("Subcategoria există deja în categoria selectată");
+        }
+
+        Subcategory subcategory = new Subcategory();
+        subcategory.setName(request.name());
+        subcategory.setCategory(category);
+
+        category.getSubcategories().add(subcategory); // sau category.addSubcategory(subcategory)
+
+        return subcategoryRepository.save(subcategory);
     }
 
     @Override
