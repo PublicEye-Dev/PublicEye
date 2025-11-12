@@ -3,6 +3,7 @@ package com.appbackend.backend.controller;
 import com.appbackend.backend.dto.*;
 import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.entity.Department;
+import com.appbackend.backend.entity.Subcategory;
 import com.appbackend.backend.entity.User;
 import com.appbackend.backend.service.admin.AdminService;
 import jakarta.validation.Valid;
@@ -35,6 +36,14 @@ public class AdminController {
         Category category = adminService.createCategory(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CategoryResponse.from(category));
+    }
+
+    @PostMapping("/subcategories")
+    public ResponseEntity<SubcategoryResponse> createSubcategory(
+            @Valid @RequestBody SubcategoryCreateRequest request) {
+        Subcategory subcategory = adminService.createSubcategory(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(SubcategoryResponse.from(subcategory));
     }
 
     @PostMapping("/operators")
