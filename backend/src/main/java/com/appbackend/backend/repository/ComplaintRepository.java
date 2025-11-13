@@ -4,13 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.appbackend.backend.entity.Complaint;
 import com.appbackend.backend.enums.Status;
 
-public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
+public interface ComplaintRepository extends JpaRepository<Complaint, Long>, JpaSpecificationExecutor<Complaint> {
     List<Complaint> findAllByStatus(Status status);
 
     @Query("SELECT c FROM Complaint c WHERE c.createdAt >= :startDate")
