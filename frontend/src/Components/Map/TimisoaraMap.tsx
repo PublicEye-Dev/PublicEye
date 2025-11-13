@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { LatLngExpression, Map as LeafletMap } from "leaflet";
 import L from "leaflet";
-import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
 import rawGeoJson from "../../Data/Map/export.geojson?raw"; //importat cu ?raw ca sa vina ca text
 import "./TimisoaraMap.css";
 
@@ -139,6 +139,7 @@ export default function TimisoaraMap({
       maxBoundsViscosity={1}
       className="map-container"
       scrollWheelZoom
+      zoomControl={false} //dezactivez zoom control default ca sa pot pune in alta pozitie
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -147,6 +148,9 @@ export default function TimisoaraMap({
         maxZoom={20}
         noWrap
       />
+
+      <ZoomControl position="bottomright" />
+
       {/*aplic masca, daca se gaseste conturul timisoarei, se deseneaza masca */}
       {boundaryMask && (
         <GeoJSON

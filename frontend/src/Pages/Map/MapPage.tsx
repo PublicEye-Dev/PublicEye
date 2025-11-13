@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import TimisoaraMap from "../../Components/Map/TimisoaraMap";
 import "./MapPage.css";
 import Navbar from "../../Components/Layout/Navbar/Navbar";
+import ReportsFilter from "../../Components/ReportsFilter/ReportsFilter";
 
 type Issue = {
   id: string;
@@ -36,6 +37,7 @@ export default function MapPage() {
 
       <section className="map-page-content">
         <TimisoaraMap issues={issues} />
+        <ReportsFilter />
       </section>
     </div>
   );
