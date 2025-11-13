@@ -4,6 +4,7 @@ import { useAuthStore } from "../../Store/authStore";
 import IdentifierInput from "../../Components/Auth/IndentifierInput/IdentifierInput";
 import CodeInput from "../../Components/Auth/CodeInput/CodeInput";
 import "./LoginPage.css";
+import Navbar from "../../Components/Layout/Navbar/Navbar";
 
 export default function LoginPage() {
   const { step, token } = useAuthStore();
@@ -16,8 +17,19 @@ export default function LoginPage() {
   }, [step, token, navigate]);
 
   return (
+  
+
+    <div className="login-page-container">
+      <header className="login-navbar">
+        <Navbar />
+      </header>
+      
     <div className="login-page">
+     
+  
       <div className="login-container">
+        
+        
         <div className="login-header">
           <h1>Autentificare</h1>
           <p>Înainte de a continua, vă rugăm să vă autentificați</p>
@@ -30,6 +42,7 @@ export default function LoginPage() {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }
