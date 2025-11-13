@@ -59,9 +59,7 @@ apiClient.interceptors.response.use(
 
       throw new Error(message);
     } else if (error.request) {
-      throw new Error(
-        "Nu s-a primit răspuns de la server. Verifică dacă backend-ul rulează pe http://localhost:8080"
-      );
+      throw new Error("Nu s-a primit răspuns de la server");
     } else {
       throw new Error("Eroare la configurarea request-ului");
     }
