@@ -33,6 +33,8 @@ public class Complaint {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
+    private String imagePublicId;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
