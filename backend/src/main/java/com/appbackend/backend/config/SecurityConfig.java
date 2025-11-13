@@ -40,7 +40,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/user/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/operator/**").hasRole("OPERATOR")
-                        .requestMatchers("/api/complaints/**").hasAnyRole("USER", "ADMIN", "OPERATOR")
+                        .requestMatchers("/api/complaints").permitAll()  // Doar lista fără parametri
+                        .requestMatchers("/api/complaints/**").authenticated()  // Restul necesită auth
                         .requestMatchers("/api/account/**").hasAnyRole("USER", "ADMIN", "OPERATOR")
                         .anyRequest().authenticated()
                 )
