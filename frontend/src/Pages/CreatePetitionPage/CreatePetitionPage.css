@@ -1,0 +1,55 @@
+
+html, body, #root {
+  height: auto; 
+  min-height: 100vh; 
+  overflow-y: auto !important; 
+  overflow-x: hidden; 
+  margin: 0;
+  padding: 0;
+}
+
+
+.create-petition-page {
+
+  background-color: #ffffff; 
+}
+
+
+.create-petition-page-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+.create-petition-page-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  background-color: #fff; 
+}
+
+.petition-content-wrapper {
+  margin: 40px auto; 
+
+  max-width: 900px;
+  width: 100%;
+  padding: 0 20px; 
+  box-sizing: border-box;
+  flex: 1;
+  background-color: #ffffff;
+  
+  flex-direction: column;
+  display: flex;
+  
+  
+  align-items: center; 
+}
+
+@media (max-width: 768px) {
+  .petition-content-wrapper {
+    margin: 24px auto;
+    padding: 0 15px;
+  }
+}

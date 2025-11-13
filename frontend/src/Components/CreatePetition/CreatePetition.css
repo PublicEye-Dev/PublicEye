@@ -1,0 +1,187 @@
+
+
+
+
+.petition-form-container {
+  width: 100%;
+  max-width: 500px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+
+.image-upload-area {
+  width: 100%;
+  height: 200px;
+  background-color: #f9f9f9;
+  border-bottom: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.image-upload-area:hover {
+  background-color: #f0f0f0;
+}
+.image-upload-area label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+  color: #555;
+  font-size: 1rem;
+  text-align: center;
+  padding: 10px;
+}
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+
+.header-form-section,
+.context-form-section,
+.initiator-form-section,
+.submit-button-container {
+  padding: 20px 24px;
+  border-top: 1px solid #f0f0f0; 
+}
+
+
+.petition-form-container input[type="text"],
+.petition-form-container textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-family: inherit;
+  margin-bottom: 12px;
+}
+.petition-form-container textarea {
+  resize: vertical;
+}
+.petition-form-container input:focus,
+.petition-form-container textarea:focus {
+  border-color: #3b5998;
+  outline: none;
+  box-shadow: 0 0 5px rgba(59, 89, 152, 0.3);
+}
+
+
+.title-input {
+  font-size: 1.5rem !important; 
+  font-weight: 700;
+  text-align: center;
+  border: none !important;
+  border-bottom: 2px solid #ccc !important;
+  border-radius: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.recipient-input {
+  font-size: 1rem;
+  text-align: center;
+  border: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-bottom: 0;
+}
+.title-input:focus,
+.recipient-input:focus {
+  box-shadow: none !important;
+  border-bottom-color: #3b5998 !important;
+}
+
+
+.context-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+.context-text-inputs textarea {
+  background-color: #f9f9f9;
+}
+.context-text-inputs textarea:last-child {
+  margin-bottom: 0;
+}
+
+
+.initiator-form-section {
+  background-color: #fafafa;
+}
+.initiator-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+.checkbox-container label {
+  font-weight: 500;
+  color: #333;
+}
+.checkbox-container input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+.initiator-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.initiator-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.initiator-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+.submit-button {
+  width: 100%;
+  padding: 14px;
+  background-color: #303f9f; 
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.submit-button:hover {
+  background-color: #283593;
+}
+
+
+.submit-button:disabled {
+  background-color: #9fa8da; 
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.submit-button:disabled:hover {
+  background-color: #9fa8da;
+}
