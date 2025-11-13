@@ -6,11 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.appbackend.backend.dto.ComplaintDto;
+import com.appbackend.backend.dto.PagedResponse;
 import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.entity.Complaint;
 import com.appbackend.backend.entity.Subcategory;
@@ -127,5 +131,64 @@ public class ComplaintService {
                 .orElseThrow(() -> new EntityNotFoundException("Sesizarea nu există"));
         complaint.setVotes(complaint.getVotes() + 1);
         return ComplaintDto.from(complaint);
+    }
+
+    @Transactional(readOnly = true)
+    public PagedResponse<ComplaintDto> getComplaintsWithFilters(
+            Long categoryId,
+            Long subcategoryId,
+            List<String> statusStrings,
+            Pageable pageable) {
+
+        // Convertim statusurile din String în Status enum
+        List<Status> statuses = null;
+        if (statusStrings != null && !statusStrings.isEmpty()) {
+            statuses = statusStrings.stream()
+                    .map(statusStr -> {
+                        try {
+                            return Status.valueOf(statusStr.toUpperCase());
+                        } catch (IllegalArgumentException e) {
+                            return null;
+                        }
+                    })
+                    .filter(status -> status != null)
+                    .collect(Collectors.toList());
+        }
+
+        // Construim Specification pentru filtrare
+        Specification<Complaint> spec = ComplaintSpecification.withFilters(
+                categoryId,
+                subcategoryId,
+                statuses
+        );
+
+        // Executăm query-ul cu paginare
+        Page<Complaint> page = complaintRepository.findAll(spec, pageable);
+
+        // Convertim în DTO-uri
+        List<ComplaintDto> content = page.getContent().stream()
+                .map(ComplaintDto::from)
+                .collect(Collectors.toList());
+
+        return PagedResponse.of(
+                content,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<ComplaintDto> searchComplaints(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Specification<Complaint> spec = ComplaintSpecification.searchByKeyword(keyword.trim());
+        List<Complaint> complaints = complaintRepository.findAll(spec);
+
+        return complaints.stream()
+                .map(ComplaintDto::from)
+                .collect(Collectors.toList());
     }
 }
