@@ -6,12 +6,15 @@ import com.appbackend.backend.entity.Department;
 import com.appbackend.backend.entity.Subcategory;
 import com.appbackend.backend.entity.User;
 import com.appbackend.backend.service.admin.AdminService;
+import com.appbackend.backend.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping ("/api/admin")
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
+    private final UserService userService;
 
     @PostMapping("/departments")
     public ResponseEntity<DepartmentResponse> createDepartment(
@@ -47,10 +51,15 @@ public class AdminController {
     }
 
     @PostMapping("/operators")
-    public ResponseEntity<UserResponse> createOperator(
+    public ResponseEntity<UserDto> createOperator(
             @Valid @RequestBody DepartmentOperatorCreateRequest request) {
         User operator = adminService.createDepartmentOperator(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(UserResponse.from(operator));
+                .body(UserDto.from(operator));
+    }
+
+    @GetMapping("/get-users")
+    public ResponseEntity<List<UserDto>> getUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
