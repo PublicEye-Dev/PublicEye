@@ -1,0 +1,94 @@
+/* Form container */
+.identifier-form {
+  width: 100%;
+}
+
+/* Form group - spații reduse */
+.identifier-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.identifier-form .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+
+.identifier-form .form-group input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background: white;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+
+.identifier-form .form-group input:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.identifier-form .form-group input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.identifier-form .form-group input::placeholder {
+  color: #999;
+  font-size: 1rem;
+}
+
+/* Error message */
+.identifier-form .error {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #d32f2f;
+  line-height: 1.4;
+}
+
+/* Button */
+.identifier-form .btn-primary {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.75rem;
+  line-height: 1.5;
+}
+
+.identifier-form .btn-primary:hover:not(:disabled) {
+  background: #0052a3;
+}
+
+.identifier-form .btn-primary:active:not(:disabled) {
+  background: #004080;
+}
+
+.identifier-form .btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Loading text */
+.identifier-form .loading {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
