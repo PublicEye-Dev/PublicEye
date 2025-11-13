@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import TimisoaraMap from "../../Components/Map/TimisoaraMap";
 import "./MapPage.css";
+import Navbar from "../../Components/Layout/Navbar/Navbar";
 
 type Issue = {
   id: string;
@@ -30,10 +31,7 @@ export default function MapPage() {
   return (
     <div className="map-page">
       <header className="map-page-header">
-        <h1>Municipiul Timisoara</h1>
-        <p>
-          Vizualizează sesizările actuale pe hartă și filtrează după status.
-        </p>
+       <Navbar/>
       </header>
 
       <section className="map-page-content">
