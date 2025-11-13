@@ -6,7 +6,7 @@ const API_BASE_URL =
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: `${API_BASE_URL}/auth`,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -35,7 +35,9 @@ apiClient.interceptors.request.use(
 //interceptor pentru response (preia datele din body si trateaza erorile)
 apiClient.interceptors.response.use(
   (response) => {
-    return response.data; //returneaza doar data
+    // Returnează întregul response, nu doar data
+    // Astfel, funcțiile pot accesa response.data sau response.status etc.
+    return response;
   },
   (error: AxiosError) => {
     if (error.response) {
@@ -57,7 +59,9 @@ apiClient.interceptors.response.use(
 
       throw new Error(message);
     } else if (error.request) {
-      throw new Error("Nu s-a primit răspuns de la server");
+      throw new Error(
+        "Nu s-a primit răspuns de la server. Verifică dacă backend-ul rulează pe http://localhost:8080"
+      );
     } else {
       throw new Error("Eroare la configurarea request-ului");
     }
@@ -66,7 +70,9 @@ apiClient.interceptors.response.use(
 
 export async function requestOtp(identifier: string): Promise<void> {
   const request: OtpRequest = { identifier };
-  await apiClient.post<void>("/user/request-otp", request);
+  // Pentru request-otp, backend-ul returnează 200 OK fără body
+  // Așteptăm răspunsul; dacă ajunge aici, request-ul a reușit
+  await apiClient.post("/user/request-otp", request);
 }
 
 export async function verifyOtp(
@@ -74,9 +80,13 @@ export async function verifyOtp(
   otp: string
 ): Promise<AuthResponse> {
   const request: OtpVerifyRequest = { identifier, otp };
-  return apiClient
-    .post<AuthResponse>("/user/verify-otp", request)
-    .then((response) => response.data);
+  // Interceptorul returnează întregul response, deci accesăm response.data
+  const response = await apiClient.post<AuthResponse>(
+    "/user/verify-otp",
+    request
+  );
+  // Returnează doar data (AuthResponse)
+  return response.data;
 }
 
 export { apiClient };

@@ -38,6 +38,7 @@ public class CorsConfig {
             "Origin",
             "Access-Control-Request-Method",
             "Access-Control-Request-Headers"
+
         ));
         
         // Permite expunerea header-urilor în răspuns
