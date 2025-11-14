@@ -26,6 +26,7 @@ public class AdminController {
     private final AdminService adminService;
     private final UserService userService;
 
+
     @PostMapping("/departments")
     public ResponseEntity<DepartmentResponse> createDepartment(
             @Valid @RequestBody DepartmentCreateRequest request) {
@@ -34,13 +35,6 @@ public class AdminController {
                 .body(DepartmentResponse.from(department));
     }
 
-    @PostMapping("/categories")
-    public ResponseEntity<CategoryResponse> createCategory(
-            @Valid @RequestBody CategoryCreateRequest request) {
-        Category category = adminService.createCategory(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CategoryResponse.from(category));
-    }
 
     @PostMapping("/subcategories")
     public ResponseEntity<SubcategoryResponse> createSubcategory(

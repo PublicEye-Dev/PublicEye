@@ -62,28 +62,6 @@ public class AdminServiceImpl implements AdminService {
         return departmentRepository.save(department);
     }
 
-    @Override
-    @Transactional
-    public Category createCategory(CategoryCreateRequest request) {
-        Department department = null;
-        if (request.departmentId() != null) {
-            department = departmentRepository.findById(request.departmentId())
-                    .orElseThrow(() -> new EntityNotFoundException("Departamentul nu a fost găsit"));
-            if (categoryRepository.existsByNameIgnoreCaseAndDepartmentId(request.name(), request.departmentId())) {
-                throw new IllegalArgumentException("Categoria există deja pentru departamentul selectat");
-            }
-        } else {
-            if (categoryRepository.findByName(request.name()).isPresent()) {
-                throw new IllegalArgumentException("Categoria există deja");
-            }
-        }
-
-        Category category = new Category();
-        category.setName(request.name());
-        category.setDepartment(department);
-
-        return categoryRepository.save(category);
-    }
 
     @Override
     @Transactional
