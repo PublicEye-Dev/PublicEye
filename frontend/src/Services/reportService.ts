@@ -9,9 +9,11 @@ import type {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
+const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, ""); //scoate slashul final daca exista
+
 //client-ul pentru API-ul de sesizari
 const reportApiClient: AxiosInstance = axios.create({
-  baseURL: `${API_BASE_URL}/api/complaints`,
+  baseURL: `${normalizedBaseUrl}/api/complaints`,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
@@ -71,21 +73,22 @@ reportApiClient.interceptors.response.use(
 export async function listReports(
   params?: ReportListParams
 ): Promise<Report[]> {
-  const queryParams = new URLSearchParams();
+  const requestParams = new URLSearchParams();
 
-  if (params?.status && params.status.length > 0) {
+  if (params?.status?.length) {
     params.status.forEach((status: Status) => {
-      queryParams.append("status", status);
+      requestParams.append("status", status);
     });
   }
 
   if (params?.period) {
-    queryParams.append("period", params.period);
+    requestParams.append("perioada", params.period);
   }
 
-  const url = queryParams.toString() ? `/?${queryParams.toString()}` : "/";
+  const response = await reportApiClient.get<Report[]>("", {
+    params: requestParams,
+  });
 
-  const response = await reportApiClient.get<Report[]>(url);
   return response.data;
 }
 

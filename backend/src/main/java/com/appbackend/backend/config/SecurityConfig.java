@@ -2,6 +2,7 @@ package com.appbackend.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -40,8 +41,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/user/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/operator/**").hasRole("OPERATOR")
-                        .requestMatchers("/api/complaints").permitAll()  // Doar lista fără parametri
-                        .requestMatchers("/api/complaints/**").authenticated()  // Restul necesită auth
+                        .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll()
+                        .requestMatchers("/api/complaints/**").authenticated()
                         .requestMatchers("/api/account/**").hasAnyRole("USER", "ADMIN", "OPERATOR")
                         .requestMatchers("/api/categories/**").hasAnyRole("ADMIN", "OPERATOR")
                         .requestMatchers("/api/subcategories/**").authenticated()

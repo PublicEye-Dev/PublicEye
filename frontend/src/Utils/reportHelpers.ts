@@ -34,9 +34,9 @@ export function mapViewToPeriod(
   view: "allTime" | "last30Days" | "lastYear"
 ): string {
   const mapping = {
-    allTime: "all",
+    allTime: "30z",
     last30Days: "30z",
-    lastYear: "1y",
+    lastYear: "1year",
   };
   return mapping[view];
 }

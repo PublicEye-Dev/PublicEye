@@ -63,6 +63,7 @@ public class ComplaintController {
     }
 
 
+    @PreAuthorize("permitAll()")
     @GetMapping()
     public ResponseEntity<List<ComplaintDto>> listComplaints(
             @RequestParam(name = "status", required = false) List<String> statuses,
