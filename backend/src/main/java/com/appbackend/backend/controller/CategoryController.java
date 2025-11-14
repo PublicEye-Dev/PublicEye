@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,6 +55,15 @@ public class CategoryController {
         return ResponseEntity.ok(CategoryResponse.from(category));
     }
 
+    @PutMapping("/{id}/details")
+    public ResponseEntity<CategoryResponse> updateCategoryDetails(
+            @PathVariable Long id,
+            @Valid @RequestBody CategoryCreateRequest request
+    ) {
+        Category category = categoryService.updateDetails(id, request);
+        return ResponseEntity.ok(CategoryResponse.from(category));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);
@@ -76,5 +86,15 @@ public class CategoryController {
                 .map(CategoryResponse::from)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(categories);
+    }
+
+    @PutMapping("/{categoryId}/subcategories")
+    public ResponseEntity<CategoryResponse> updateCategorySubcategories(
+            @PathVariable Long categoryId,
+            @RequestParam Long newSubcategoryId,
+            @RequestParam Long exSubcategoryId
+    ) {
+        Category category = categoryService.updateSubcategories(categoryId, newSubcategoryId, exSubcategoryId);
+        return ResponseEntity.ok(CategoryResponse.from(category));
     }
 }
