@@ -9,9 +9,8 @@ import type {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
-const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, ""); //scoate slashul final daca exista
+const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, "");
 
-//client-ul pentru API-ul de sesizari
 const reportApiClient: AxiosInstance = axios.create({
   baseURL: `${normalizedBaseUrl}/api/complaints`,
   timeout: 30000,
@@ -30,21 +29,17 @@ reportApiClient.interceptors.request.use(
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
-      } catch (error) {
-        console.error("Eroare la parsarea token-ului", error);
+      } catch {
+        // ignore parse errors
       }
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 reportApiClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response) {
       const responseData = error.response.data as { message?: string } | string;
@@ -69,7 +64,6 @@ reportApiClient.interceptors.response.use(
   }
 );
 
-//listarea de sesizari
 export async function listReports(
   params?: ReportListParams
 ): Promise<Report[]> {
@@ -88,28 +82,21 @@ export async function listReports(
   const response = await reportApiClient.get<Report[]>("", {
     params: requestParams,
   });
-
   return response.data;
 }
 
-//crearea unei sesizari
 export async function createReport(
   request: ReportCreateRequest,
   imageFile: File
 ): Promise<Report> {
-  //crearea unui form data pentru a trimite request-ul si imaginea
   const formData = new FormData();
 
-  //adaugarea request-ului in form data(asa asteapta backendul)
   formData.append(
     "data",
     new Blob([JSON.stringify(request)], { type: "application/json" })
   );
-
-  //adauga imaginea in form data
   formData.append("image", imageFile);
 
-  //trimite request-ul la backend
   const response = await reportApiClient.post<Report>(
     "/add-complaint",
     formData,
@@ -122,10 +109,15 @@ export async function createReport(
   return response.data;
 }
 
-//votarea unei sesizari
 export async function voteReport(id: number): Promise<Report> {
   const response = await reportApiClient.post<Report>(`/${id}/vote`);
   return response.data;
 }
 
+export async function getReportById(id: number): Promise<Report> {
+  const response = await reportApiClient.get<Report>(`/complaint/${id}`);
+  return response.data;
+}
+
 export { reportApiClient };
+

@@ -1,15 +1,15 @@
 body {
   margin: 0;
-  padding: 0; 
+  padding: 0;
 }
 
 .site-header {
   background-color: rgb(34, 34, 220);
   display: flex;
   flex-direction: row;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px; 
+  padding: 10px 20px;
   box-sizing: border-box;
   width: 100%;
   position: relative;
@@ -22,78 +22,79 @@ body {
 }
 
 .header-logo {
-  height: 50px; 
-  width: auto; 
+  height: 50px;
+  width: auto;
   display: block;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  position: relative; 
+  position: relative;
 }
-
-
 
 .login-button {
   color: white;
   text-decoration: none;
-  font-size: 0.95rem; 
+  font-size: 0.95rem;
   font-weight: 500;
   border-radius: 6px;
-  margin-right: 10px; 
+  margin-right: 10px;
   transition: background-color 0.2s ease;
 }
 
-.login-button:hover {
-  background-color: rgba(255, 255, 255, 0.1); 
+.login-button--label {
+  cursor: default;
+  pointer-events: none;
 }
 
+.login-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 
-
-.header-title-text{
-  color:aliceblue;
+.header-title-text {
+  color: aliceblue;
   font-size: 15px;
   width: 10px;
 }
 
-.menu-button{
-  cursor:pointer;
-  color:aliceblue;
-  border:none;
+.menu-button {
+  cursor: pointer;
+  color: aliceblue;
+  border: none;
   width: 40px;
-  background-color: transparent; 
+  background-color: transparent;
   padding: 0;
   height: 30px;
   font-size: larger;
 }
 
 .dropdown-menu {
-  position: absolute; 
+  position: absolute;
   top: 100%;
   right: 0;
   margin-top: 8px;
-  
+
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 8px 0; 
-  width: 200px; 
-  z-index: 100; 
-  
+  padding: 8px 0;
+  width: 200px;
+  z-index: 100;
+
   animation: fadeIn 0.15s ease-out;
 }
 
 .dropdown-item {
-  display: block; 
+  display: block;
   width: 100%;
   padding: 10px 16px;
-  box-sizing: border-box; 
-  
+  box-sizing: border-box;
+
   color: #333;
   font-size: 0.95rem;
   font-family: inherit;
-  text-decoration: none; 
+  text-decoration: none;
   text-align: left;
 
   background: none;
@@ -106,7 +107,7 @@ body {
 }
 
 .dropdown-item--button {
-  color: #d9534f; 
+  color: #d9534f;
   font-weight: 500;
 }
 

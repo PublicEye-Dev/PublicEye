@@ -9,17 +9,14 @@ import {
   GeoJSON,
   ZoomControl,
 } from "react-leaflet";
-import rawGeoJson from "../../Data/Map/export.geojson?raw"; //importat cu ?raw ca sa vina ca text
 import "./TimisoaraMap.css";
+import rawGeoJson from "../../Data/Map/export.geojson?raw";
 import type { ReportIssue } from "../../Types/report";
+import { getStatusLabel } from "../../Utils/reportHelpers";
+import { useReportStore } from "../../Store/reportStore";
 
-//tip generic pentru proprietatile fiecarui feature din GeoJSON
-type FeatureProperties = {
-  name?: string;
-  [key: string]: unknown;
-};
+type FeatureProperties = { name?: string; [key: string]: unknown };
 
-//props pentru componenta de map, trecem o lista de issues si o functie onMarkerClick(callback cand user-ul apasa pe un marker)
 type TimisoaraMapProps = {
   issues?: ReportIssue[];
   onMarkerClick?: (issueId: string) => void;
@@ -28,9 +25,8 @@ type TimisoaraMapProps = {
 const featureCollection = JSON.parse(rawGeoJson) as GeoJSON.FeatureCollection<
   GeoJSON.Geometry,
   FeatureProperties
->; //facem parse la geojson ca sa avem tipare typescript
+>;
 
-//filtram poligoanele cu gemetry type ca sa lucram doar cu limitele teritoriale
 function isPolygonFeature(
   feature: GeoJSON.Feature<GeoJSON.Geometry, FeatureProperties>
 ): feature is GeoJSON.Feature<
@@ -43,7 +39,6 @@ function isPolygonFeature(
 
 const polygonFeatures = featureCollection.features.filter(isPolygonFeature);
 
-//reconstruiesc un feature collection doar cu poligaone, trimit direct la componenta GeoJSON
 const polygonCollection: GeoJSON.FeatureCollection<
   GeoJSON.Polygon | GeoJSON.MultiPolygon,
   FeatureProperties
@@ -52,18 +47,13 @@ const polygonCollection: GeoJSON.FeatureCollection<
   features: polygonFeatures,
 };
 
-//identific limita teritoriala a municipiului Timisoara
 const timisoaraBoundary =
   polygonFeatures.find((feature) => feature.properties?.name === "Timișoara") ??
   null;
 
-//construiesc un poligon outer ring cu coordonatele globale, apoi inserez conturul timisoarei ca hole. folosesc pentru a umbri restul hartii
 function createMaskFeature(
-  feature: GeoJSON.Feature<
-    GeoJSON.Polygon | GeoJSON.MultiPolygon,
-    FeatureProperties
-  >
-): GeoJSON.Feature<GeoJSON.Polygon, FeatureProperties> {
+  feature: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
+): GeoJSON.Feature<GeoJSON.Polygon> {
   const outerRing: GeoJSON.Position[] = [
     [-180, -85],
     [-180, 85],
@@ -93,9 +83,7 @@ const boundaryMask = timisoaraBoundary
 
 const TIMISOARA_CENTER: LatLngExpression = [45.7489, 21.2087];
 const DEFAULT_ZOOM = 13;
-
 const issueIcon = new L.Icon.Default();
-
 const fallbackBounds = L.latLngBounds([
   [45.6, 20.9],
   [45.95, 21.4],
@@ -105,24 +93,22 @@ export default function TimisoaraMap({
   issues = [],
   onMarkerClick,
 }: TimisoaraMapProps) {
+  const { loadReportDetails } = useReportStore();
+  const mapRef = useRef<LeafletMap | null>(null);
+
   const maxBounds = useMemo(() => {
     if (!timisoaraBoundary) {
       return fallbackBounds;
     }
-
     const layer = L.geoJSON(timisoaraBoundary);
-    const bounds = layer.getBounds().pad(0.1); //10% padding pentru a putea vedea in jurul timisoarei
+    const bounds = layer.getBounds().pad(0.08);
     layer.remove();
     return bounds;
   }, []);
 
-  const mapRef = useRef<LeafletMap | null>(null);
-
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) {
-      return;
-    }
+    if (!map) return;
 
     map.setMaxBounds(maxBounds);
     map.options.inertia = false;
@@ -139,7 +125,7 @@ export default function TimisoaraMap({
       maxBoundsViscosity={1}
       className="map-container"
       scrollWheelZoom
-      zoomControl={false} //dezactivez zoom control default ca sa pot pune in alta pozitie
+      zoomControl={false}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -151,7 +137,6 @@ export default function TimisoaraMap({
 
       <ZoomControl position="bottomright" />
 
-      {/*aplic masca, daca se gaseste conturul timisoarei, se deseneaza masca */}
       {boundaryMask && (
         <GeoJSON
           data={boundaryMask}
@@ -160,9 +145,9 @@ export default function TimisoaraMap({
             weight: 0,
             fillColor: "#1f2937",
             fillOpacity: 0.35,
-            fillRule: "evenodd", //folosim fillRule evenodd ca sa umbrim restul hartii
+            fillRule: "evenodd",
           }}
-          interactive={false} //previne hover pe masca
+          interactive={false}
         />
       )}
 
@@ -182,22 +167,47 @@ export default function TimisoaraMap({
         }}
       />
 
-      {issues.map((issue) => (
-        <Marker
-          key={issue.id}
-          position={issue.position}
-          icon={issueIcon}
-          eventHandlers={{
-            click: () => onMarkerClick?.(issue.id),
-          }}
-        >
-          <Popup>
-            <strong>{issue.title}</strong>
-            <br />
-            Status: {issue.status}
-          </Popup>
-        </Marker>
-      ))}
+      {issues.map((issue) => {
+        const statusLabel = getStatusLabel(issue.status);
+        const statusClass = issue.status.toLowerCase();
+
+        return (
+          <Marker
+            key={issue.id}
+            position={issue.position}
+            icon={issueIcon}
+            eventHandlers={{
+              click: () => {
+                loadReportDetails(Number(issue.id));
+                onMarkerClick?.(issue.id);
+              },
+            }}
+          >
+            <Popup className="issue-popup">
+              <div className="issue-popup-header">
+                <h3>{issue.title}</h3>
+                <span className={`issue-status issue-status-${statusClass}`}>
+                  {statusLabel}
+                </span>
+              </div>
+
+              <p className="issue-popup-description">{issue.description}</p>
+
+              <div className="issue-popup-meta">
+                <span>
+                  <strong>Voturi:</strong> {issue.votes}
+                </span>
+              </div>
+
+              {issue.imageUrl && (
+                <div className="issue-popup-image">
+                  <img src={issue.imageUrl} alt={issue.title} />
+                </div>
+              )}
+            </Popup>
+          </Marker>
+        );
+      })}
     </MapContainer>
   );
 }
