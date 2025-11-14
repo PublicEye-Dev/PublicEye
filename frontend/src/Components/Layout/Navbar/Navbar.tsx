@@ -49,9 +49,9 @@ const Navbar: React.FC = () => {
               className="dropdown-item" 
               onClick={() => setIsMenuOpen(false)}
             >
-              Profilul meu
+              Contul meu
             </Link>
-
+            
             <Link 
               to="/sesizari" 
               className="dropdown-item"

@@ -1,44 +1,42 @@
-/* Setează un fundal pentru pagină, ca să iasă cardul în evidență */
+
 body {
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4; /* Un gri deschis */
+  background-color: #f4f4f4; 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
 }
 
-/* Containerul principal al cardului */
+
 .report-container {
   max-width: 700px;
-  margin: 40px auto; /* Centrează cardul și îi dă spațiu sus/jos */
+  margin: 40px auto;
   background-color: #ffffff;
   border-radius: 10px;
   
-  /* Asta e cheia: adaugă spațiere interioară! */
+  
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
 }
 
-/* Am scos 'display: flex' de aici. Acum e doar pentru spațiere. */
+
 .form-group {
-  margin-bottom: 25px; /* Spațiu între secțiunile formularului */
+  margin-bottom: 25px; 
 }
 
-/* --- Stiluri uniforme pentru Etichete (Labels) --- */
 .file-upload-label-container,
 .description-label-container,
 .category-section,
 .subcategory-section {
-  font-size: 1.2rem; /* 25px era prea mare */
+  font-size: 1.2rem; 
   font-weight: 600;
   color: #333;
-  margin-bottom: 10px; /* Spațiu între etichetă și input */
-  display: block; /* Asigură că stă pe linia ei */
+  margin-bottom: 10px;
+  display: block;
 }
 
-/* --- Stiluri uniforme pentru Input-uri --- */
-/* Aici setăm ca input-urile să ocupe 100% din lățime */
+
 #description,
 #category,
 #subcategory {
@@ -46,24 +44,24 @@ body {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-sizing: border-box; /* Foarte important pentru padding și width: 100% */
+  box-sizing: border-box; 
   font-size: 1rem;
   color: rgb(55, 54, 54);
 }
 
 #description {
-  min-height: 130px; /* Folosim min-height în loc de height */
-  resize: vertical; /* Permite utilizatorului să redimensioneze */
+  min-height: 130px; 
+  resize: vertical; 
 }
 
 #category,
 #subcategory {
-  height: 48px; /* O înălțime standard, mai lizibilă */
+  height: 48px;
 }
 
-/* --- Secțiunea de File Upload --- */
+
 .file-upload-section {
-  /* Nu mai e nevoie de 'width' sau 'height' aici */
+
   padding: 0;
   margin: 0;
 }
@@ -72,7 +70,7 @@ body {
   border: 2px dashed #ccc;
   border-radius: 10px;
   padding: 20px;
-  width: 100%; /* Să ocupe tot spațiul */
+  width: 100%; 
   box-sizing: border-box;
   text-align: center;
   cursor: pointer;
@@ -84,12 +82,12 @@ body {
 
 .file-upload-label {
   display: flex;
-  flex-direction: column; /* Iconița sus, textul jos */
+  flex-direction: column; 
   align-items: center;
   justify-content: center;
   color: gray;
   padding-top: 0;
-  gap: 8px; /* Spațiu între iconiță și text */
+  gap: 8px; 
 }
 
 .file-upload-label .upload-icon {
@@ -100,16 +98,11 @@ body {
   font-size: 0.9rem;
 }
 
-/* --- Secțiunile de Descriere, Categorie etc. --- */
-/* Nu mai avem nevoie de stiluri pentru: */
-/* .description-section, .category-label-container, .subcategory-label-container */
-/* Deoarece am scos lățimile procentuale ciudate */
 
-/* --- Butoanele de Acțiune --- */
 .form-actions {
   margin-top: 30px;
   display: flex;
-  justify-content:center ; /* Aliniază butoanele la dreapta */
+  justify-content:center ;
   gap: 10px;
 }
 
@@ -129,7 +122,7 @@ body {
 }
 
 .button-secondary {
-  background-color: #f0f0f0; /* Un gri mai deschis, mai prietenos */
+  background-color: #f0f0f0; 
   color: #333;
   border: 1px solid #ccc;
   padding: 12px 20px;
