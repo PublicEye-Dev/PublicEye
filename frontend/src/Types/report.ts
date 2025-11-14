@@ -5,12 +5,11 @@ export type Status =
   | "REZOLVATA"
   | "REDIRECTIONATA";
 
-//raspunsul de la backend
 export interface Report {
   id: number;
   description: string;
-  imageUrl: string;
-  imagePublicId: string;
+  imageUrl: string | null;
+  imagePublicId: string | null;
   votes: number;
   status: Status;
   latitude: number;
@@ -18,9 +17,10 @@ export interface Report {
   categoryId: number;
   subcategoryId: number;
   userId: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-//request-ul facut de frontend la backend
 export interface ReportCreateRequest {
   description: string;
   categoryId: number;
@@ -30,13 +30,11 @@ export interface ReportCreateRequest {
   longitude: number;
 }
 
-//parametrii pentru lista de sesizari
 export interface ReportListParams {
   status?: Status[];
   period?: string;
 }
 
-//format pentru raportul afisat pe mapa
 export interface ReportIssue {
   id: string;
   title: string;
@@ -44,5 +42,7 @@ export interface ReportIssue {
   position: [number, number];
   votes: number;
   description: string;
-  imageUrl: string;
+  imageUrl: string | null;
+  updatedAtLabel?: string;
 }
+

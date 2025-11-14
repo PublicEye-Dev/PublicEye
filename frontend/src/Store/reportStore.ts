@@ -1,29 +1,30 @@
 import { create } from "zustand";
-import type { ReportListParams, Report, Status } from "../Types/report";
-import { listReports, voteReport } from "../Services/reportService";
+import type { ReportListParams, Report } from "../Types/report";
+import {
+  listReports,
+  voteReport,
+  getReportById,
+} from "../Services/reportService";
 
 interface ReportState {
   reports: Report[];
   isLoading: boolean;
   error: string | null;
   filters: ReportListParams;
+  selectedReport: Report | null;
+  isLoadingDetails: boolean;
+  detailsError: string | null;
 }
 
 interface ReportActions {
-  //incarca sesizarile de la backend
   fetchReports: (params?: ReportListParams) => Promise<void>;
-
-  //actualizeaza filtrele
   setFilters: (filters: ReportListParams) => void;
-
-  //voteaza o sesizare
   voteReportById: (id: number) => Promise<void>;
-
-  //reseteaza store-ul la starea initiala
+  loadReportDetails: (id: number) => Promise<void>;
+  selectReport: (report: Report | null) => void;
   reset: () => void;
 }
 
-//tip combinat pentru store
 type ReportStore = ReportState & ReportActions;
 
 const initialState: ReportState = {
@@ -31,24 +32,21 @@ const initialState: ReportState = {
   isLoading: false,
   error: null,
   filters: {
-    period: "30z", //default perioada este ultimele 30 de zile
+    period: "30z",
   },
+  selectedReport: null,
+  isLoadingDetails: false,
+  detailsError: null,
 };
 
 export const useReportStore = create<ReportStore>((set, get) => ({
   ...initialState,
 
-  //incarcarea sesizarilor
   fetchReports: async (params?: ReportListParams) => {
     set({ isLoading: true, error: null });
-
     try {
-      //foloseste parametrii din argument sau din filters
       const filtersToUse = params || get().filters;
-
-      //apeleaza serviciul pentru a obtine sesizarile
       const reports = await listReports(filtersToUse);
-
       set({
         reports,
         isLoading: false,
@@ -59,47 +57,66 @@ export const useReportStore = create<ReportStore>((set, get) => ({
         error:
           error instanceof Error
             ? error.message
-            : "Eroare la incarcarea sesizarilor",
-        isLoading: false,
-      });
-    } finally {
-      set({
+            : "Eroare la încărcarea sesizărilor",
         isLoading: false,
       });
     }
   },
 
-  //actualizarea filtrelor
   setFilters: (filters: ReportListParams) => {
     set({ filters });
-
-    //reincarca sesizarile cu noile filtre
     get().fetchReports(filters);
   },
 
-  //votarea unei sesizari
   voteReportById: async (id: number) => {
     try {
-      //apeleaza serviciul pentru a vota sesizarea
       const updatedReport = await voteReport(id);
-
-      //actualizeaza sesizarea in lista din store
       set((state) => ({
         reports: state.reports.map((report) =>
           report.id === id ? updatedReport : report
         ),
+        selectedReport:
+          state.selectedReport && state.selectedReport.id === id
+            ? updatedReport
+            : state.selectedReport,
       }));
     } catch (error) {
       set({
         error:
           error instanceof Error
             ? error.message
-            : "Eroare la votarea sesizarii",
+            : "Eroare la votarea sesizării",
       });
     }
   },
 
-  //resetarea store-ului
+  loadReportDetails: async (id: number) => {
+    set({
+      isLoadingDetails: true,
+      detailsError: null,
+      selectedReport: null,
+    });
+    try {
+      const report = await getReportById(id);
+      set({
+        selectedReport: report,
+        isLoadingDetails: false,
+      });
+    } catch (error) {
+      set({
+        detailsError:
+          error instanceof Error
+            ? error.message
+            : "Nu s-au putut încărca detaliile sesizării",
+        isLoadingDetails: false,
+      });
+    }
+  },
+
+  selectReport: (report) => {
+    set({ selectedReport: report, detailsError: null });
+  },
+
   reset: () => {
     set({ ...initialState });
   },
