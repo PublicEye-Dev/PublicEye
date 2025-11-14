@@ -1,15 +1,15 @@
 import React from "react";
 import Navbar from "../../Components/Layout/Navbar/Navbar";
 import Report from "../../Components/CreateReport/CreateReport";
-import { GoArrowLeft } from "react-icons/go"; // <-- 1. Importă iconița
-import { useNavigate } from "react-router-dom"; // <-- 2. Importă hook-ul de navigare
-import './CreateReportPage.css'; // <-- 3. Importă fișierul CSS
+import { GoArrowLeft } from "react-icons/go"; 
+import { useNavigate } from "react-router-dom"; 
+import './CreateReportPage.css'; 
 
 const CreateReportPage: React.FC = () => {
-  const navigate = useNavigate(); // <-- 4. Inițializează funcția de navigare
+  const navigate = useNavigate(); 
 
   const handleBack = () => {
-    navigate(-1); // Funcție simplă care te duce la pagina anterioară
+    navigate(-1); 
   };
 
   return (

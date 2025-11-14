@@ -137,6 +137,7 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
+  accent-color: #303f9f;
 }
 .initiator-fields {
   display: flex;
