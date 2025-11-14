@@ -9,7 +9,8 @@ public record UserDto(
         String email,
         String phoneNumber,
         Role role,
-        Long departmentId
+        Long departmentId,
+        String departmentName
 ) {
     public static UserDto from(User user) {
         return new UserDto(
@@ -18,7 +19,8 @@ public record UserDto(
                 user.getEmail(),
                 user.getPhoneNumber(),
                 user.getRole(),
-                user.getDepartment() != null ? user.getDepartment().getId() : null
+                user.getDepartment() != null ? user.getDepartment().getId() : null,
+                user.getDepartment() != null ? user.getDepartment().getName() : null
         );
     }
 }
