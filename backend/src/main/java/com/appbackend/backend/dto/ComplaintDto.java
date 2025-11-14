@@ -13,6 +13,7 @@ public record ComplaintDto(
         Double latitude,
         Double longitude,
         Long categoryId,
+        String categoryName,
         Long subcategoryId,
         Long userId
 ) {
@@ -27,6 +28,7 @@ public record ComplaintDto(
                 complaint.getLatitude(),
                 complaint.getLongitude(),
                 complaint.getCategory().getId(),
+                complaint.getCategory().getName(),
                 complaint.getSubcategory().getId(),
                 complaint.getUser().getId()
         );

@@ -1,20 +1,25 @@
 package com.appbackend.backend.controller;
 
-import com.appbackend.backend.dto.*;
-import com.appbackend.backend.entity.Category;
-import com.appbackend.backend.entity.Department;
-import com.appbackend.backend.entity.Subcategory;
-import com.appbackend.backend.entity.User;
-import com.appbackend.backend.service.admin.AdminService;
-import com.appbackend.backend.service.user.UserService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.appbackend.backend.dto.DepartmentCreateRequest;
+import com.appbackend.backend.dto.DepartmentOperatorCreateRequest;
+import com.appbackend.backend.dto.DepartmentResponse;
+import com.appbackend.backend.dto.UserDto;
+import com.appbackend.backend.entity.Department;
+import com.appbackend.backend.entity.User;
+import com.appbackend.backend.service.admin.AdminService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping ("/api/admin")
@@ -24,8 +29,6 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
-    private final UserService userService;
-
 
     @PostMapping("/departments")
     public ResponseEntity<DepartmentResponse> createDepartment(
@@ -33,15 +36,6 @@ public class AdminController {
         Department department = adminService.createDepartment(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(DepartmentResponse.from(department));
-    }
-
-
-    @PostMapping("/subcategories")
-    public ResponseEntity<SubcategoryResponse> createSubcategory(
-            @Valid @RequestBody SubcategoryCreateRequest request) {
-        Subcategory subcategory = adminService.createSubcategory(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(SubcategoryResponse.from(subcategory));
     }
 
     @PostMapping("/operators")
@@ -52,8 +46,11 @@ public class AdminController {
                 .body(UserDto.from(operator));
     }
 
-    @GetMapping("/get-users")
-    public ResponseEntity<List<UserDto>> getUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    @GetMapping("/departments/{departmentId}/operator")
+    public ResponseEntity<UserDto> getDepartmentOperator(
+            @PathVariable Long departmentId) {
+        UserDto operator = adminService.getDepartmentOperator(departmentId);
+        return ResponseEntity.ok(operator);
     }
+
 }
