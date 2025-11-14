@@ -1,0 +1,59 @@
+.my-reports-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f4f4f4; 
+  width: 100%;
+}
+
+.my-reports-page-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.my-reports-page-card {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  
+  padding: 40px 20px; 
+  box-sizing: border-box;
+  gap: 20px; 
+}
+
+.back-button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center; 
+    gap: 8px;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: color 0.2s ease;
+}
+
+.back-button:hover {
+    color: #007bff;
+}
+
+.back-button span {
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .my-reports-page-card {
+    padding: 24px 15px;
+  }
+}

@@ -17,6 +17,7 @@ const ProfileCard: React.FC = () => {
       <div className="profile-header">
         <h1>Contul meu</h1>
         <p>Actualizați informațiile contului </p>
+        
       </div>
       
       {/* Linia albastră de diviziune */}
