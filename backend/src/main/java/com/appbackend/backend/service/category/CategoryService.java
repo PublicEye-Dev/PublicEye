@@ -13,4 +13,6 @@ public interface CategoryService {
     List<Category> getAllCategories();
     List<Category> getAllCategoriesByDepartmentId(Long departmentId);
     List<Category> searchCategories(String keyword);
+    Category updateSubcategories(Long categoryId, Long newSubcategoryId, Long exSubcategoryId);
+    Category updateDetails(Long categoryId, CategoryCreateRequest request);
 }

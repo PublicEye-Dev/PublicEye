@@ -90,4 +90,61 @@ public class CategoryServiceImpl implements CategoryService {
                 CategorySpecification.searchByKeyword(keyword.trim())
         );
     }
+
+    @Override
+    @Transactional
+    public Category updateSubcategories(Long categoryId, Long newSubcategoryId, Long exSubcategoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Categoria nu a fost gasita"));
+
+        Subcategory exSubcategory = subcategoryRepository.findById(exSubcategoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Subcategoria veche nu a fost gasita"));
+
+        Subcategory newSubcategory = subcategoryRepository.findById(newSubcategoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Subcategoria noua nu a fost gasita"));
+
+        if (exSubcategory.equals(newSubcategory)) {
+            throw new IllegalArgumentException("Subcategoriile trebuie sa difere!");
+        }
+
+        // Verificăm dacă subcategoria veche aparține categoriei
+        if (!category.getSubcategories().contains(exSubcategory)) {
+            throw new IllegalArgumentException("Categoria veche nu aparține acestui departament!");
+        }
+
+        // Verificăm dacă subcategoria nouă nu aparține deja altei categorii
+        if (newSubcategory.getCategory() != null && !newSubcategory.getCategory().equals(category)) {
+            throw new IllegalStateException("Subcategoria nouă aparține deja altei categorii!");
+        }
+
+        // Actualizăm relația bidirecțională
+        category.getSubcategories().remove(exSubcategory);
+        category.getSubcategories().add(newSubcategory);
+
+        // Actualizăm referința categorie pe subcategorii
+        subcategoryRepository.delete(exSubcategory);
+        newSubcategory.setCategory(category);
+
+        // Salvăm categoriile pentru a actualiza relația în DB
+        subcategoryRepository.save(newSubcategory);
+
+        return categoryRepository.save(category);
+
+    }
+
+    @Override
+    public Category updateDetails(Long categoryId, CategoryCreateRequest request) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Categoria nu a fost gasita"));
+
+        if(request.departmentId() != null) {
+            Department department = departmentRepository.findById(request.departmentId())
+                    .orElseThrow(() -> new EntityNotFoundException("Departamentul nu a fost gasit"));
+            category.setDepartment(department);
+        }
+        if(request.name() != null && !request.name().equals(category.getName())) {
+            category.setName(request.name());
+        }
+        return categoryRepository.save(category);
+    }
 }

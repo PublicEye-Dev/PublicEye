@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/complaints/**").authenticated()  // Restul necesită auth
                         .requestMatchers("/api/account/**").hasAnyRole("USER", "ADMIN", "OPERATOR")
                         .requestMatchers("/api/categories/**").hasAnyRole("ADMIN", "OPERATOR")
+                        .requestMatchers("/api/subcategories/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
