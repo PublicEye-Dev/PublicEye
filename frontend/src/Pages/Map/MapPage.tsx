@@ -1,44 +1,50 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import TimisoaraMap from "../../Components/Map/TimisoaraMap";
 import "./MapPage.css";
 import Navbar from "../../Components/Layout/Navbar/Navbar";
 import ReportsFilter from "../../Components/ReportsFilter/ReportsFilter";
-
-type Issue = {
-  id: string;
-  title: string;
-  status: string;
-  position: [number, number];
-};
-
-const mockIssues: Issue[] = [
-  {
-    id: "1",
-    title: "Groapă în carosabil - Str. Gheorghe Lazăr",
-    status: "În lucru",
-    position: [45.757, 21.221],
-  },
-  {
-    id: "2",
-    title: "Gunoi neridicat - Piața 700",
-    status: "Nouă",
-    position: [45.754, 21.229],
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { useReportStore } from "../../Store/reportStore";
+import { reportToIssues } from "../../Utils/reportHelpers";
+import type { ReportIssue } from "../../Types/report";
+import AddReportButton from "../../Components/AddReportButton/AddReportButton";
 
 export default function MapPage() {
-  const issues = useMemo(() => mockIssues, []);
+  const navigate = useNavigate();
+
+  const { reports, isLoading, error, fetchReports } = useReportStore();
+
+  //incarca sesizarile cand componenta se monteaza
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
+
+  //converteste Report[] in ReportIssue[] pt harta
+  const issues: ReportIssue[] = useMemo(() => {
+    return reportToIssues(reports);
+  }, [reports]);
+
+  //user apasa pe markerul unei sesizari
+  const handleMarkerClick = (issueId: string) => {
+    navigate(`/report/${issueId}`); //navigheaza la pagina detalii sesizare
+  };
 
   return (
     <div className="map-page">
       <header className="map-page-header">
-       <Navbar/>
+        <Navbar />
       </header>
 
       <section className="map-page-content">
-        <TimisoaraMap issues={issues} />
+        <TimisoaraMap issues={issues} onMarkerClick={handleMarkerClick} />
         <ReportsFilter />
+        <AddReportButton />
       </section>
+
+      {error && <div className="map-page-error">{error}</div>}
+      {isLoading && (
+        <div className="map-page-loading">Se încarcă sesizările...</div>
+      )}
     </div>
   );
 }

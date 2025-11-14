@@ -1,0 +1,53 @@
+.add-report-button {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: rgb(34, 34, 220);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4);
+  transition: all 0.2s ease;
+  z-index: 1000;
+}
+
+.add-report-button:hover {
+  background: #0052a3;
+  box-shadow: 0 6px 16px rgba(0, 102, 204, 0.5);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.add-report-button:active {
+  transform: translateX(-50%) translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.4);
+}
+
+.add-report-button-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.add-report-button-text {
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .add-report-button {
+    bottom: 1.5rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .add-report-button-icon {
+    font-size: 1.25rem;
+  }
+}

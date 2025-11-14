@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { LatLngExpression, Map as LeafletMap } from "leaflet";
 import L from "leaflet";
-import { MapContainer, Marker, Popup, TileLayer, GeoJSON, ZoomControl } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  GeoJSON,
+  ZoomControl,
+} from "react-leaflet";
 import rawGeoJson from "../../Data/Map/export.geojson?raw"; //importat cu ?raw ca sa vina ca text
 import "./TimisoaraMap.css";
-
-//tip pentru sesizarile pe care le vom afisa
-type Issue = {
-  id: string;
-  title: string;
-  status: string;
-  position: LatLngExpression;
-};
+import type { ReportIssue } from "../../Types/report";
 
 //tip generic pentru proprietatile fiecarui feature din GeoJSON
 type FeatureProperties = {
@@ -21,7 +21,7 @@ type FeatureProperties = {
 
 //props pentru componenta de map, trecem o lista de issues si o functie onMarkerClick(callback cand user-ul apasa pe un marker)
 type TimisoaraMapProps = {
-  issues?: Issue[];
+  issues?: ReportIssue[];
   onMarkerClick?: (issueId: string) => void;
 };
 
@@ -182,7 +182,6 @@ export default function TimisoaraMap({
         }}
       />
 
-      {/*afisarea markerilor pe harta pentru fiecare sesizare*/}
       {issues.map((issue) => (
         <Marker
           key={issue.id}
