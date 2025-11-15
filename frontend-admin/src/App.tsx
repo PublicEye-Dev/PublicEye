@@ -12,6 +12,8 @@ import ViewAllReportsPage from "./Pages/ViewAllReportsPage/ViewAllReportsPage";
 import EditCategoryPage from "./Pages/EditCategoryPage/EditCategoryPage";
 import ViewAllUsersPage from "./Pages/ViewAllUsersPage/ViewAllUsersPage";
 import ViewAllCategoriesPage from "./Pages/ViewAllCategoriesPage/ViewAllCategoriesPage";
+import AdminPetitionsListPage from "./Pages/AdminPetitionsListPage/AdminPetitionsListPage";
+import AdminPetitionDetailPage from "./Pages/AdminPetitionDetailPage/AdminPetitionDetailPage";
 
 export default function App() {
   return (
@@ -97,6 +99,22 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ViewAllCategoriesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/petitii-admin"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminPetitionsListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/petitii-admin/:id"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminPetitionDetailPage />
             </ProtectedRoute>
           }
         />

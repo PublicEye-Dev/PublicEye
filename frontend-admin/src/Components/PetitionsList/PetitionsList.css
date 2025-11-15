@@ -1,0 +1,78 @@
+@import "../ReportsList/ReportsList.css";
+
+.petitions-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: end;
+}
+
+.petitions-filter-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.35rem;
+}
+
+.petitions-filter-group input,
+.petitions-filter-group select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #cbd5f5;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.petitions-filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.petitions-filter-actions button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.petitions-filter-actions .link-btn {
+  background: transparent;
+  color: #2563eb;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-closed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-banned {
+  background: #ffe4e6;
+  color: #be123c;
+}
+
+.status-unknown {
+  background: #e2e8f0;
+  color: #334155;
+}
+
