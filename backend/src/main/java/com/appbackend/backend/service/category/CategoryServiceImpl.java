@@ -143,43 +143,46 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category updateSubcategories(Long categoryId, Long newSubcategoryId, Long exSubcategoryId) {
+    public Category addSubcategoryToCategory(Long categoryId, Long subcategoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("Categoria nu a fost gasita"));
 
-        Subcategory exSubcategory = subcategoryRepository.findById(exSubcategoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Subcategoria veche nu a fost gasita"));
+        Subcategory subcategory = subcategoryRepository.findById(subcategoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Subcategoria nu a fost gasita"));
 
-        Subcategory newSubcategory = subcategoryRepository.findById(newSubcategoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Subcategoria noua nu a fost gasita"));
-
-        if (exSubcategory.equals(newSubcategory)) {
-            throw new IllegalArgumentException("Subcategoriile trebuie sa difere!");
+        if (subcategory.getCategory() != null && !subcategory.getCategory().equals(category)) {
+            throw new IllegalStateException("Subcategoria aparține deja altei categorii");
         }
 
-        // Verificăm dacă subcategoria veche aparține categoriei
-        if (!category.getSubcategories().contains(exSubcategory)) {
-            throw new IllegalArgumentException("Categoria veche nu aparține acestui departament!");
+        if (category.getSubcategories().contains(subcategory)) {
+            return category;
         }
 
-        // Verificăm dacă subcategoria nouă nu aparține deja altei categorii
-        if (newSubcategory.getCategory() != null && !newSubcategory.getCategory().equals(category)) {
-            throw new IllegalStateException("Subcategoria nouă aparține deja altei categorii!");
-        }
-
-        // Actualizăm relația bidirecțională
-        category.getSubcategories().remove(exSubcategory);
-        category.getSubcategories().add(newSubcategory);
-
-        // Actualizăm referința categorie pe subcategorii
-        subcategoryRepository.delete(exSubcategory);
-        newSubcategory.setCategory(category);
-
-        // Salvăm categoriile pentru a actualiza relația în DB
-        subcategoryRepository.save(newSubcategory);
+        category.getSubcategories().add(subcategory);
+        subcategory.setCategory(category);
+        subcategoryRepository.save(subcategory);
 
         return categoryRepository.save(category);
+    }
 
+    @Override
+    @Transactional
+    public Category removeSubcategoryFromCategory(Long categoryId, Long subcategoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Categoria nu a fost gasita"));
+
+        Subcategory subcategory = subcategoryRepository.findById(subcategoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Subcategoria nu a fost gasita"));
+
+        if (!category.getSubcategories().contains(subcategory)) {
+            throw new IllegalArgumentException("Subcategoria nu aparține acestei categorii");
+        }
+
+        category.getSubcategories().remove(subcategory);
+        subcategory.setCategory(null);
+        subcategoryRepository.save(subcategory);
+
+        return categoryRepository.save(category);
     }
 
     @Override
