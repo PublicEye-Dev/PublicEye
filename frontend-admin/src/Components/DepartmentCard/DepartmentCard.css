@@ -1,0 +1,68 @@
+.department-card {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  height: 250px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.department-card-top {
+  background-color: rgb(34, 34, 220);
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.department-card-icon svg {
+  font-size: 4rem;
+  color: #fff;
+}
+
+.department-card-bottom {
+  flex: 1;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.department-card-bottom h3 {
+  margin: 0;
+  color: #1453a3;
+  font-size: 1.1rem;
+}
+
+.department-card-bottom p {
+  margin: 0;
+  color: #1f2937;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.department-card-buttons {
+  display: flex;
+  margin-top: 12px;
+}
+
+.department-btn {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.department-btn-view {
+  background: #e0edff;
+  color: #0c4a6e;
+}
+
+.department-btn-view:hover {
+  background: #c3dbff;
+}

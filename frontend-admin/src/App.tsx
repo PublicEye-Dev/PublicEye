@@ -51,7 +51,7 @@ export default function App() {
           }
         />
         <Route
-          path="/departament-admin"
+          path="/departament-admin/:id"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ViewDepartmentPage />
@@ -67,7 +67,7 @@ export default function App() {
           }
         />
         <Route
-          path="/administrare-departamente"
+          path="/gestionare-departamente"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ControlPanelDepartamentPage />
