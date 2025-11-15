@@ -3,7 +3,6 @@ package com.appbackend.backend.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.appbackend.backend.service.complaint.ComplaintService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +24,7 @@ import com.appbackend.backend.dto.ComplaintCreateRequest;
 import com.appbackend.backend.dto.ComplaintDto;
 import com.appbackend.backend.dto.PagedResponse;
 import com.appbackend.backend.enums.Status;
+import com.appbackend.backend.service.complaint.ComplaintService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +60,12 @@ public class ComplaintController {
     @GetMapping("/complaint/{id}")
     public ResponseEntity<ComplaintDto> getComplaint(@PathVariable Long id) {
         return ResponseEntity.ok(complaintService.getComplaintById(id));
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'OPERATOR')")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ComplaintDto>> getComplaintsByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(complaintService.getComplaintsByUser(userId));
     }
 
 

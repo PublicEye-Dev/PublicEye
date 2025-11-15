@@ -14,6 +14,8 @@ import com.appbackend.backend.enums.Status;
 public interface ComplaintRepository extends JpaRepository<Complaint, Long>, JpaSpecificationExecutor<Complaint> {
     List<Complaint> findAllByStatus(Status status);
 
+    List<Complaint> findByUser_Id(Long userId);
+
     @Query("SELECT c FROM Complaint c WHERE c.createdAt >= :startDate")
     List<Complaint> findAllFromLastMonth(@Param("startDate") LocalDateTime startDate);
 

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,11 +18,13 @@ import com.appbackend.backend.dto.ComplaintDto;
 import com.appbackend.backend.dto.PagedResponse;
 import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.entity.Complaint;
+import com.appbackend.backend.entity.ComplaintVote;
 import com.appbackend.backend.entity.Subcategory;
 import com.appbackend.backend.entity.User;
 import com.appbackend.backend.enums.Status;
 import com.appbackend.backend.repository.CategoryRepository;
 import com.appbackend.backend.repository.ComplaintRepository;
+import com.appbackend.backend.repository.ComplaintVoteRepository;
 import com.appbackend.backend.repository.SubcategoryRepository;
 import com.appbackend.backend.repository.UserRepository;
 
@@ -37,6 +40,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final SubcategoryRepository subcategoryRepository;
     private final UserRepository userRepository;
     private final FileUploadService fileUploadService;
+    private final ComplaintVoteRepository complaintVoteRepository;
 
     @Override
     @Transactional
@@ -74,14 +78,16 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Transactional(readOnly = true)
     public List<ComplaintDto> listComplaints(List<String> statuses, String period) {
         LocalDateTime startDate;
-        
-        if (period.equals("30z")) {
-            startDate = LocalDateTime.now().minusDays(30);
-        } else if (period.equals("1year")) {
-            startDate = LocalDateTime.now().minusYears(1);
-        } else {
-            // Dacă perioada nu este validă, folosim ultimele 30 zile ca default
-            startDate = LocalDateTime.now().minusDays(30);
+        switch (period) {
+            case "30z":
+                startDate = LocalDateTime.now().minusDays(30);
+                break;
+            case "1year":
+                startDate = LocalDateTime.now().minusYears(1);
+                break;
+            default:
+                startDate = LocalDateTime.now().minusDays(30);
+                break;
         }
 
         List<Complaint> complaints;
@@ -107,10 +113,16 @@ public class ComplaintServiceImpl implements ComplaintService {
             }
         } else {
             // Dacă nu sunt specificate statusuri, returnăm toate complaints-urile din perioada respectivă
-            if (period.equals("30z")) {
-                complaints = complaintRepository.findAllFromLastMonth(startDate);
-            } else {
-                complaints = complaintRepository.findAllFromLastYear(startDate);
+            switch (period) {
+                case "30z":
+                    complaints = complaintRepository.findAllFromLastMonth(startDate);
+                    break;
+                case "1year":
+                    complaints = complaintRepository.findAllFromLastYear(startDate);
+                    break;
+                default:
+                    complaints = complaintRepository.findAllFromLastMonth(startDate);
+                    break;
             }
         }
 
@@ -134,6 +146,18 @@ public class ComplaintServiceImpl implements ComplaintService {
     public ComplaintDto upvote(Long id) {
         Complaint complaint = complaintRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Sesizarea nu există"));
+
+        User currentUser = getCurrentUser();
+
+        if (complaintVoteRepository.existsByComplaint_IdAndUser_Id(complaint.getId(), currentUser.getId())) {
+            throw new IllegalStateException("Ai votat deja această sesizare");
+        }
+
+        ComplaintVote vote = new ComplaintVote();
+        vote.setComplaint(complaint);
+        vote.setUser(currentUser);
+        complaintVoteRepository.save(vote);
+
         complaint.setVotes(complaint.getVotes() + 1);
         Complaint updatedComplaint = complaintRepository.save(complaint);
         return ComplaintDto.from(updatedComplaint);
@@ -205,5 +229,25 @@ public class ComplaintServiceImpl implements ComplaintService {
         Complaint complaint = complaintRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Sesizarea nu exista"));
         return ComplaintDto.from(complaint);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ComplaintDto> getComplaintsByUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Utilizatorul nu există"));
+
+        return complaintRepository.findByUser_Id(user.getId()).stream()
+                .map(ComplaintDto::from)
+                .collect(Collectors.toList());
+    }
+
+    private User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User authenticatedUser) {
+            return userRepository.findById(authenticatedUser.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Utilizatorul nu există"));
+        }
+        throw new IllegalStateException("Utilizatorul nu este autentificat");
     }
 }
