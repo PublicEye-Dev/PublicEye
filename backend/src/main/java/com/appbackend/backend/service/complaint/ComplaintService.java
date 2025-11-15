@@ -22,6 +22,7 @@ public interface ComplaintService{
     List<ComplaintDto> listComplaints(List<String> statuses, String period);
     ComplaintDto updateStatus(Long id, Status newStatus);
     ComplaintDto upvote(Long id);
+    void deleteComplaint(Long id);
 
     PagedResponse<ComplaintDto> getComplaintsWithFilters(
             Long categoryId,

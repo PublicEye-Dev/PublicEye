@@ -164,6 +164,12 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
+    public void deleteComplaint(Long id) {
+        Complaint complaint = complaintRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Nu a fost gasita sesizarea"));
+        complaintRepository.delete(complaint);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public PagedResponse<ComplaintDto> getComplaintsWithFilters(
             Long categoryId,

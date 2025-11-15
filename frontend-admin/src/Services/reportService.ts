@@ -137,6 +137,20 @@ export async function getReportById(id: number): Promise<Report> {
   return response.data;
 }
 
+export async function updateReportStatus(
+  id: number,
+  status: Status
+): Promise<Report> {
+  const response = await reportApiClient.patch<Report>(`/${id}/status`, null, {
+    params: { status },
+  });
+  return response.data;
+}
+
+export async function deleteReport(id: number): Promise<void> {
+  await reportApiClient.delete(`/delete/${id}`);
+}
+
 export async function listReportsPaginated(
   params: ReportPaginationParams = {}
 ): Promise<PagedResponse<Report>> {
