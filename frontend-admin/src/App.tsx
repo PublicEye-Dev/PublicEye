@@ -10,6 +10,7 @@ import ManageReportPage from "./Pages/ManageReportPage/ManageReportPage";
 import ControlPanelDepartamentPage from "./Pages/ControlPanelDepartmentPage/ControlPanelDepartmentPage";
 import ViewAllReportsPage from "./Pages/ViewAllReportsPage/ViewAllReportsPage";
 import EditCategoryPage from "./Pages/EditCategoryPage/EditCategoryPage";
+import ViewAllUsersPage from "./Pages/ViewAllUsersPage/ViewAllUsersPage";
 
 export default function App() {
   return (
@@ -79,6 +80,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <EditCategoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gestionare-useri"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ViewAllUsersPage />
             </ProtectedRoute>
           }
         />

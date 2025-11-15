@@ -4,8 +4,8 @@ import {
   listReportsPaginated,
   searchReports,
   type ReportPaginationParams,
-  type PagedResponse,
 } from "../Services/reportService";
+import type { PagedResponse } from "../Types/pagination";
 
 type SortDir = "ASC" | "DESC";
 
