@@ -8,11 +8,11 @@ import com.appbackend.backend.dto.SubcategoryResponse;
 import com.appbackend.backend.entity.Subcategory;
 
 public interface SubcategoryService {
-    public PagedResponse<SubcategoryResponse> getAllSubcategories(int page, int size, Long categoryId);
-    public Subcategory getSubcategoryById(Long id);
-    public Subcategory addSubcategory(SubcategoryCreateRequest request);
-    public Subcategory updateSubcategory(Long id, SubcategoryCreateRequest request);
-    public void deleteSubcategory(Long id);
-    public List<Subcategory> getSubcategoriesByCategoryId(Long id);
-    
+    PagedResponse<SubcategoryResponse> getAllSubcategories(int page, int size, Long categoryId, String categoryName);
+    List<SubcategoryResponse> getAllSubcategoriesList(Long categoryId);
+    Subcategory getSubcategoryById(Long id);
+    Subcategory addSubcategory(SubcategoryCreateRequest request);
+    Subcategory updateSubcategory(Long id, SubcategoryCreateRequest request);
+    void deleteSubcategory(Long id);
+    List<Subcategory> getSubcategoriesByCategoryId(Long id);
 }

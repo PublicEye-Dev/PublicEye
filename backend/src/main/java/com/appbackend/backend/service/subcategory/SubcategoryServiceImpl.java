@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.appbackend.backend.dto.PagedResponse;
@@ -25,33 +26,49 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public PagedResponse<SubcategoryResponse> getAllSubcategories(int page, int size, Long categoryId) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Pagina trebuie sa fie pozitiva");
+    public PagedResponse<SubcategoryResponse> getAllSubcategories(int page, int size, Long categoryId, String categoryName) {
+        int validatedPage = Math.max(page, 0);
+        int validatedSize = size <= 0 ? 10 : Math.min(size, 100);
+
+        Pageable pageable = PageRequest.of(validatedPage, validatedSize, Sort.by("name").ascending());
+
+        if (categoryId != null && !categoryRepository.existsById(categoryId)) {
+            throw new EntityNotFoundException("Categoria nu a fost gasita");
         }
-        if (size <= 0 || size > 100) {
-            throw new IllegalArgumentException("Dimensiunea trebuie sa fie intre 1 si 100");
-        }
-        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
-        Page<Subcategory> subcategoryPage;
-        if (categoryId != null) {
-            if (!categoryRepository.existsById(categoryId)) {
-                throw new EntityNotFoundException("Categoria nu a fost gasita");
-            }
-            subcategoryPage = subcategoryRepository.findAllByCategory_Id(categoryId, pageable);
-        } else {
-            subcategoryPage = subcategoryRepository.findAll(pageable);
-        }
+
+        Specification<Subcategory> specification = SubcategorySpecification.withCategoryFilters(categoryId, categoryName);
+        Page<Subcategory> subcategoryPage = subcategoryRepository.findAll(specification, pageable);
+
         List<SubcategoryResponse> content = subcategoryPage.getContent()
                 .stream()
                 .map(SubcategoryResponse::from)
                 .toList();
-        return PagedResponse.of(
+
+        return new PagedResponse<>(
                 content,
                 subcategoryPage.getNumber(),
                 subcategoryPage.getSize(),
-                subcategoryPage.getTotalElements()
+                subcategoryPage.getTotalElements(),
+                subcategoryPage.getTotalPages(),
+                subcategoryPage.isFirst(),
+                subcategoryPage.isLast()
         );
+    }
+
+    @Override
+    public List<SubcategoryResponse> getAllSubcategoriesList(Long categoryId) {
+        if (categoryId == null) {
+            throw new IllegalArgumentException("Id-ul categoriei este obligatoriu");
+        }
+
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new EntityNotFoundException("Categoria nu a fost gasita");
+        }
+
+        return subcategoryRepository.findAllByCategoryId(categoryId)
+                .stream()
+                .map(SubcategoryResponse::from)
+                .toList();
     }
 
     @Override
@@ -75,12 +92,14 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     public Subcategory updateSubcategory(Long id, SubcategoryCreateRequest request) {
         Subcategory subcategory = subcategoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Subcategoria nu a fost gasita"));
-        if(request.name() != null) {
-            subcategory.setName(request.name());
+        String requestedName = request.name();
+        if (!subcategory.getName().equals(requestedName)) {
+            subcategory.setName(requestedName);
         }
         Category category = subcategory.getCategory();
-        if(request.categoryId() != null && !request.categoryId().equals(category.getId())) {
-            category = categoryRepository.findById(request.categoryId())
+        Long requestedCategoryId = request.categoryId();
+        if(!requestedCategoryId.equals(category.getId())) {
+            category = categoryRepository.findById(requestedCategoryId)
                     .orElseThrow(() -> new EntityNotFoundException("Categoria nu a fost gasita"));
         }
         subcategory.setCategory(category);

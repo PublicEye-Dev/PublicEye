@@ -34,7 +34,7 @@ public class DepartmentController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentResponse> getDepartmentById(@PathVariable Long id) {
+    public ResponseEntity<DepartmentResponse> getDepartmentById(@PathVariable(name = "id") Long id) {
         Department department = departmentService.getDepartmentById(id);
         return ResponseEntity.ok(DepartmentResponse.from(department));
     }
