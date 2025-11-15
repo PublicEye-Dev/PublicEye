@@ -1,0 +1,68 @@
+.creaza-categorie-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+  padding: 24px;
+  max-width: 500px;
+  margin: 40px auto; 
+  border: 1px solid #e2e8f0; 
+}
+
+.creaza-categorie-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #111827; 
+}
+
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column; 
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151; 
+}
+
+.form-group input[type="text"],
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-sizing: border-box; 
+  background-color: #ffffff; 
+  box-shadow: #111827 0px 0px 0px 0px;
+}
+
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2563eb; 
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.button-salvare {
+  width: 100%; 
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  background-color: #2563eb; 
+  color: white;
+}
+
+.button-salvare:hover {
+  background-color: #1d4ed8;
+}
