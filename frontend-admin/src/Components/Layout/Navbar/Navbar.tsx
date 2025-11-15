@@ -1,87 +1,133 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
 import stemaLogo from "../../../images/logo.png";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { FaBars, FaUser } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import "./Navbar.css";
+import { useAuthStore } from "../../../Store/authStore";
 
-
-const Navbar = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Navbar: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
+  const { token, role, logout } = useAuthStore();
 
   const handleDropdownToggle = () => {
-    console.log("Meniu apăsat!");
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const goLogin = (next?: string) => {
+    closeMenu();
+    if (next) {
+      navigate(`/login?next=${encodeURIComponent(next)}`);
+      return;
+    }
+    navigate("/login");
+  };
+
+  const handleProtectedNav = (path: string) => {
+    if (!token) {
+      goLogin(path);
+      return;
+    }
+    navigate(path);
+    closeMenu();
   };
 
   const handleLogout = () => {
-    console.log("Deconectare...");
-    // Logica ta de logout
+    if (!token) {
+      closeMenu();
+      return;
+    }
+    logout();
+    closeMenu();
+    navigate("/login");
   };
 
-    return (
-         <header className="site-header">
-      
-      {/* Partea din stânga (Logo) */}
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        event.target instanceof Node &&
+        !menuRef.current.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  return (
+    <div className="site-header">
       <div className="header-left">
-        <Link to="/dashboard">
+        <Link to="/">
           <img src={stemaLogo} alt="Logo" className="header-logo" />
         </Link>
       </div>
 
-      {/* Partea din dreapta (Butoane) */}
-      <div className="header-right">
+      <div className="header-right" ref={menuRef}>
+        {token ? (
+          <span className="login-button login-button--label">
+            {role === "ADMIN" ? "Administrator" : "Operator"}
+          </span>
+        ) : (
+          <Link to="/login" className="login-button">
+            Intră în cont
+          </Link>
+        )}
 
-        {/* === 1. BUTONUL NOU ADĂUGAT === */}
-        <Link to="/login" className="login-button">
-          Admin
-        </Link>
-        {/* ============================== */}
-
-        {/* 2. Butonul de meniu (dropdown) */}
-        <button className="menu-button" onClick={handleDropdownToggle}>
+        <button
+          className="menu-button"
+          onClick={handleDropdownToggle}
+          aria-label="Meniu"
+        >
           <FaBars />
         </button>
 
         {isMenuOpen && (
           <div className="dropdown-menu">
-            
-            <Link 
-              to="/profil" 
-              className="dropdown-item" 
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Profilul meu
-            </Link>
+            {token ? (
+              <>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleProtectedNav("/")}
+                >
+                  Harta sesizărilor
+                </button>
 
-            <Link 
-              to="/sesizari" 
-              className="dropdown-item"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Sesizările mele
-            </Link>
-            
-            <Link 
-              to="/petitii" 
-              className="dropdown-item"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Petițiile mele
-            </Link>
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleProtectedNav("/departament-admin")}
+                >
+                  Departamente
+                </button>
 
-            <button 
-              onClick={handleLogout} 
-              className="dropdown-item dropdown-item--button"
-            >
-              Deconectare
-            </button>
+                <button
+                  onClick={handleLogout}
+                  className="dropdown-item dropdown-item--button"
+                >
+                  Deconectare
+                </button>
+              </>
+            ) : (
+              <button className="dropdown-item" onClick={() => goLogin()}>
+                Intră în cont
+              </button>
+            )}
           </div>
         )}
       </div>
-    </header>
-    )
-}
+    </div>
+  );
+};
 
 export default Navbar;
