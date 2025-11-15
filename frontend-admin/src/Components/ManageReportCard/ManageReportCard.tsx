@@ -3,14 +3,17 @@ import { IoSaveOutline, IoTrashOutline, IoMailOutline } from 'react-icons/io5';
 import { useState } from 'react';
 import './ManageReportCard.css';
 
+interface ManageReportCardProps {
+  reportId?: number;
+}
 
-const ManageReportCard = () => {
+const ManageReportCard = ({ reportId }: ManageReportCardProps) => {
      const [currentStatus, setCurrentStatus] = useState('Nouă');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   
   const reportDetails = {
-    id: 'REP-00123',
+    id: reportId ? `REP-${reportId.toString().padStart(5, "0")}` : 'REP-00123',
     categorie: 'Drumuri și trotuare',
     subiect: 'Gaură în asfalt',
     descriere: 'Există o gaură mare în asfalt pe strada Exemplu, nr. 10. Pericol pentru mașini.',

@@ -6,6 +6,26 @@ import type {
   Status,
 } from "../Types/report";
 
+export interface PagedResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+}
+
+export interface ReportPaginationParams {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDir?: "ASC" | "DESC";
+  status?: Status[];
+  categoryId?: number;
+  subcategoryId?: number;
+}
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -114,6 +134,47 @@ export async function voteReport(id: number): Promise<Report> {
 
 export async function getReportById(id: number): Promise<Report> {
   const response = await reportApiClient.get<Report>(`/complaint/${id}`);
+  return response.data;
+}
+
+export async function listReportsPaginated(
+  params: ReportPaginationParams = {}
+): Promise<PagedResponse<Report>> {
+  const response = await reportApiClient.get<PagedResponse<Report>>(
+    "/paginated",
+    {
+      params: {
+        page: params.page ?? 0,
+        size: params.size ?? 10,
+        sortBy: params.sortBy ?? "createdAt",
+        sortDir: params.sortDir ?? "DESC",
+        categoryId: params.categoryId,
+        subcategoryId: params.subcategoryId,
+        ...(params.status?.length
+          ? { status: params.status }
+          : undefined),
+      },
+      paramsSerializer: (params) => {
+        const searchParams = new URLSearchParams();
+        Object.entries(params).forEach(([key, value]) => {
+          if (value === undefined || value === null) return;
+          if (Array.isArray(value)) {
+            value.forEach((item) => searchParams.append(key, item));
+          } else {
+            searchParams.append(key, String(value));
+          }
+        });
+        return searchParams.toString();
+      },
+    }
+  );
+  return response.data;
+}
+
+export async function searchReports(keyword: string): Promise<Report[]> {
+  const response = await reportApiClient.get<Report[]>("/search", {
+    params: { q: keyword },
+  });
   return response.data;
 }
 
