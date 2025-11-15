@@ -1,0 +1,153 @@
+.categorie-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+  padding: 24px;
+  max-width: 800px; 
+  margin: 40px auto; 
+  border: 1px solid #e2e8f0; 
+}
+
+.categorie-card h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: #111827; 
+}
+
+.categorie-card-body {
+  display: flex;
+  gap: 32px; 
+}
+
+.form-stanga,
+.form-dreapta {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+}
+
+.form-stanga {
+  padding-right: 32px;
+  border-right: 1px solid #e2e8f0; 
+}
+
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column; 
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151; 
+}
+
+.form-group input[type="text"],
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #cbd5e1; 
+  border-radius: 6px;
+  box-sizing: border-box; 
+  background-color: #ffffff; 
+}
+
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2563eb; 
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.form-group input[readOnly] {
+  background-color: #f8fafc; 
+  color: #64748b; 
+  cursor: not-allowed;
+}
+
+.button-salvare,
+.button-sterge {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px; 
+}
+
+.button-salvare {
+  background-color: rgb(34,34,220); 
+  color: white;
+}
+.button-salvare:hover {
+  background-color: rgb(4, 4, 187);
+}
+
+.button-sterge {
+  background-color: #ef4444; 
+  color: white;
+}
+.button-sterge:hover {
+  background-color: #dc2626;
+}
+
+.form-dreapta .button-sterge {
+  margin-top: auto; 
+  
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.delete-modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  text-align: center;
+  color: #333;
+}
+
+.delete-modal h3 {
+  color: #dc3545;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.delete-modal p {
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
