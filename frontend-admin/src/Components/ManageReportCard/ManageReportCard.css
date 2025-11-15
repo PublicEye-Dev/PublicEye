@@ -1,0 +1,254 @@
+.report-card-container {
+  display: flex;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin: 30px auto; 
+  max-width: 900px;
+  gap: 40px; 
+  flex-wrap: wrap; 
+  color: #333;
+}
+
+
+.report-details-section {
+  flex: 2; 
+  min-width: 300px; 
+}
+
+.report-details-section h3,
+.user-details-section h3 {
+  color: black; 
+  margin-top: 0;
+  border-bottom: 1px solid #eee; 
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+.report-details-section ul,
+.user-details-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.report-details-section li,
+.user-details-section li {
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.report-details-section li strong {
+  color: #555;
+}
+
+.report-details-section p {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+
+.report-actions-section {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 250px; 
+}
+
+
+
+
+.status-control {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.status-control label {
+  font-weight: 600;
+  color: #0a0a0a;
+}
+
+
+.status-action-group {
+  display: flex;
+  gap: 10px; 
+}
+
+.status-dropdown {
+
+  flex-grow: 1; 
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 1rem;
+  appearance: none; 
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230056b3'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  cursor: pointer;
+}
+
+
+.save-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: rgb(34, 34, 220);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  /* transition: background-color 0.2s ease; */
+  flex-shrink: 0;
+}
+
+.save-button:hover {
+  background-color: rgb(4, 4, 169);
+}
+
+
+.button-icon-small {
+  font-size: 1rem;
+}
+
+
+.delete-button,
+.mail-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  width: 100%;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+.mail-button {
+  background-color: rgb(34, 34, 220);
+  color: white;
+}
+
+.mail-button:hover {
+  background-color: rgb(4, 4, 169);
+}
+
+.button-icon {
+  font-size: 1.2rem;
+}
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.delete-modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  text-align: center;
+  color: #333;
+}
+
+.delete-modal h3 {
+  color: #dc3545;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.delete-modal p {
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.confirm-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.confirm-delete:hover {
+  background-color: #c82333;
+}
+
+.cancel-delete {
+  background-color: #6c757d; 
+  color: white;
+}
+
+.cancel-delete:hover {
+  background-color: #5a6268;
+}
+
+
+@media (max-width: 768px) {
+  .report-card-container {
+    flex-direction: column;
+    padding: 20px;
+    margin: 20px auto;
+  }
+
+  .report-details-section,
+  .report-actions-section {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .report-details-section {
+    margin-bottom: 30px; 
+  }
+}
+

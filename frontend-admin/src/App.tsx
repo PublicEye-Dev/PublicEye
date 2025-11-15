@@ -6,6 +6,7 @@ import ProtectedRoute from "./Components/Layout/ProtectedRoute";
 import CreateReportPage from "./Pages/Report/CreateReportPage";
 import "./App.css";
 import ControlPanelPage from "./Pages/ControlPanelPage/ControlPanelPage";
+import ManageReportPage from "./Pages/ManageReportPage/ManageReportPage";
 
 export default function App() {
   return (
@@ -42,6 +43,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ViewDepartmentPage />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/administrare-sesizare"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ManageReportPage />
             </ProtectedRoute>
           }
         />
