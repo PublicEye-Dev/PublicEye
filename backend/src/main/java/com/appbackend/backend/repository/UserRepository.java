@@ -31,7 +31,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("""
             SELECT u FROM User u
-            WHERE (:name IS NULL OR LOWER(u.fullName) LIKE LOWER(CONCAT('%', :name, '%')))
+            WHERE (:name IS NULL OR LOWER(u.fullName) LIKE LOWER(CONCAT('%', CAST(:name AS string), '%')))
               AND (:role IS NULL OR u.role = :role)
               AND (:excludeAdmin = false OR u.role <> com.appbackend.backend.enums.Role.ADMIN)
             """)

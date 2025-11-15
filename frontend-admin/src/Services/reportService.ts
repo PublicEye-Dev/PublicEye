@@ -5,16 +5,7 @@ import type {
   ReportListParams,
   Status,
 } from "../Types/report";
-
-export interface PagedResponse<T> {
-  content: T[];
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  first: boolean;
-  last: boolean;
-}
+import type { PagedResponse } from "../Types/pagination";
 
 export interface ReportPaginationParams {
   page?: number;

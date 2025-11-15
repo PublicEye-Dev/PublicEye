@@ -3,8 +3,6 @@ package com.appbackend.backend.dto;
 import com.appbackend.backend.entity.Complaint;
 import com.appbackend.backend.enums.Status;
 
-import java.time.LocalDateTime;
-
 public record ComplaintDto(
         Long id,
         String description,
