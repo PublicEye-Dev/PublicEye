@@ -23,6 +23,8 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long>, Jpa
     List<Complaint> findAllFromLastYear(@Param("startDate") LocalDateTime startDate);
 
     @Query("SELECT c FROM Complaint c WHERE c.status IN :statuses AND c.createdAt >= :startDate")
-    List<Complaint> findByStatusesAndCreatedAtAfter(@Param("statuses") List<Status> statuses, 
+    List<Complaint> findByStatusesAndCreatedAtAfter(@Param("statuses") List<Status> statuses,
                                                       @Param("startDate") LocalDateTime startDate);
+
+    List<Complaint> findAllByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

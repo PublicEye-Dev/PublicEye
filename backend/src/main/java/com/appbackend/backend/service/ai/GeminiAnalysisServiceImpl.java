@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.appbackend.backend.dto.AlertaDto;
 import com.appbackend.backend.dto.ComplaintDto;
 import com.appbackend.backend.dto.GeminiAlertResponseDto;
+import com.appbackend.backend.dto.RaportGeneralDto;
 import com.appbackend.backend.dto.gemini.GeminiContentDto;
 import com.appbackend.backend.dto.gemini.GeminiPartDto;
 import com.appbackend.backend.dto.gemini.GeminiRequestDto;
@@ -39,6 +40,34 @@ public class GeminiAnalysisServiceImpl implements GeminiAnalysisService {
               ]
             }
             """;
+    private static final String RAPORT_PROMPT_TEMPLATE = """
+            Ești un analist de date senior la Primăria Timișoara. Sarcina ta este să analizezi următoarea listă de sesizări și să generezi un raport strategic.
+
+            **Reguli Stricte:**
+            1.  Nu adăuga niciun text înainte sau după. Răspunsul tău trebuie să fie exclusiv un JSON valid, fără markdown (fără ```json ... ```).
+            2.  Respectă cu strictețe următoarea structură JSON:
+            {
+              "sumarExecutiv": {
+                "sumar": "..."
+              },
+              "topProbleme": [
+                {"categorie": "...", "numarSesizari": ...},
+                {"categorie": "...", "numarSesizari": ...}
+              ],
+              "zoneFierbinti": [
+                {"zona": "...", "descriereProbleme": "..."},
+                {"zona": "...", "descriereProbleme": "..."}
+              ]
+            }
+
+            **Analize de făcut:**
+            1.  **sumarExecutiv**: Un sumar managerial de max 100 de cuvinte care identifică tendințele principale.
+            2.  **topProbleme**: Un top 5 al celor mai frecvente categorii de probleme.
+            3.  **zoneFierbinti**: Un top 3 al locațiilor (cartiere, străzi) cu cele mai multe probleme corelate.
+
+            **Date de Analizat (Sesizări în format JSON):**
+            %s
+            """;
 
     private final WebClient geminiWebClient;
     private final ObjectMapper objectMapper;
@@ -52,20 +81,7 @@ public class GeminiAnalysisServiceImpl implements GeminiAnalysisService {
         String serializedComplaints = serializeComplaints(sesizari);
         String prompt = buildPrompt(serializedComplaints);
 
-        GeminiRequestDto request = new GeminiRequestDto(
-                List.of(new GeminiContentDto(List.of(new GeminiPartDto(prompt))))
-        );
-
-        GeminiResponseDto response = geminiWebClient.post()
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(GeminiResponseDto.class)
-                .onErrorResume(throwable -> {
-                    LOGGER.error("Eroare la apelul Gemini", throwable);
-                    return Mono.error(new IllegalStateException("Nu s-a putut obține răspuns de la Gemini"));
-                })
-                .block();
-
+        GeminiResponseDto response = callGemini(prompt);
         String jsonPayload = extractJsonFromResponse(response);
 
         GeminiAlertResponseDto aiResponse;
@@ -77,6 +93,26 @@ public class GeminiAnalysisServiceImpl implements GeminiAnalysisService {
         }
 
         return Optional.ofNullable(aiResponse.alerte()).orElse(List.of());
+    }
+
+    @Override
+    public RaportGeneralDto genereazaRaportAgregat(List<ComplaintDto> sesizari) {
+        if (sesizari == null) {
+            throw new IllegalArgumentException("Lista de sesizări pentru raport nu poate fi null");
+        }
+
+        String serializedComplaints = serializeComplaints(sesizari);
+        String prompt = RAPORT_PROMPT_TEMPLATE.formatted(serializedComplaints);
+
+        GeminiResponseDto response = callGemini(prompt);
+        String jsonPayload = extractJsonFromResponse(response);
+
+        try {
+            return objectMapper.readValue(jsonPayload, RaportGeneralDto.class);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Răspuns Gemini invalid pentru raport: {}", jsonPayload, e);
+            throw new IllegalStateException("Formatul raportului Gemini nu respectă schema așteptată", e);
+        }
     }
 
     private String serializeComplaints(List<ComplaintDto> complaints) {
@@ -100,6 +136,22 @@ public class GeminiAnalysisServiceImpl implements GeminiAnalysisService {
                 Lista completă a sesizărilor (JSON):
                 %s
                 """.formatted(RESPONSE_SCHEMA, complaintsJson);
+    }
+
+    private GeminiResponseDto callGemini(String prompt) {
+        GeminiRequestDto request = new GeminiRequestDto(
+                List.of(new GeminiContentDto(List.of(new GeminiPartDto(prompt))))
+        );
+
+        return geminiWebClient.post()
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(GeminiResponseDto.class)
+                .onErrorResume(throwable -> {
+                    LOGGER.error("Eroare la apelul Gemini", throwable);
+                    return Mono.error(new IllegalStateException("Nu s-a putut obține răspuns de la Gemini"));
+                })
+                .block();
     }
 
     private String extractJsonFromResponse(GeminiResponseDto response) {

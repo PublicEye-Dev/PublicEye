@@ -1,6 +1,7 @@
 package com.appbackend.backend.service.complaint;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -34,4 +35,5 @@ public interface ComplaintService{
     ComplaintDto getComplaintById(Long id);
     List<ComplaintDto> getComplaintsByUser(Long userId);
     List<ComplaintDto> getComplaintsForAnalysis();
+    List<ComplaintDto> getComplaintsInInterval(LocalDate dataInceput, LocalDate dataSfarsit);
 }
