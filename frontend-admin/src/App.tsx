@@ -9,6 +9,7 @@ import ControlPanelPage from "./Pages/ControlPanelPage/ControlPanelPage";
 import ManageReportPage from "./Pages/ManageReportPage/ManageReportPage";
 import ControlPanelDepartamentPage from "./Pages/ControlPanelDepartmentPage/ControlPanelDepartmentPage";
 import ViewAllReportsPage from "./Pages/ViewAllReportsPage/ViewAllReportsPage";
+import EditCategoryPage from "./Pages/EditCategoryPage/EditCategoryPage";
 
 export default function App() {
   return (
@@ -69,6 +70,15 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ControlPanelDepartamentPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editare-categorie"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <EditCategoryPage />
             </ProtectedRoute>
           }
         />
