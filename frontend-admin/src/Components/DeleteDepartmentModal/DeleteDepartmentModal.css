@@ -1,0 +1,74 @@
+.dept-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.dept-modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  width: min(420px, 90vw);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+}
+
+.dept-modal h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #0f172a;
+}
+
+.dept-modal p {
+  margin: 0 0 0.75rem 0;
+  color: #475569;
+}
+
+.dept-modal-warning {
+  font-weight: 600;
+  color: #b91c1c;
+}
+
+.dept-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.dept-modal-btn {
+  min-width: 140px;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dept-modal-btn.cancel {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.dept-modal-btn.cancel:hover {
+  background: #cbd5f1;
+}
+
+.dept-modal-btn.confirm {
+  background: #dc2626;
+  color: #fff;
+}
+
+.dept-modal-btn.confirm:hover {
+  background: #b91c1c;
+}
+
+.dept-modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

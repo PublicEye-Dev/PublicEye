@@ -84,6 +84,14 @@
   resize: vertical; 
 }
 
+.modal-error {
+  margin: 0;
+  margin-top: 8px;
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end; 

@@ -1,12 +1,23 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../Components/Layout/Navbar/Navbar";
-import CardControlPanel from "../../Components/CardControlPanel/CardControlPanel";
-import { FaShieldAlt, FaMoneyBillWave, FaCity } from "react-icons/fa";
 import "./ControlPanelDepartmentPage.css";
 import AddDepartmentModal from "../../Components/AddDepartmentModal/AddDepartmentModal";
+import AddOperatorModal from "../../Components/AddOperatorModal/AddOperatorModal";
+import { useDepartmentStore } from "../../Store/departmentStore";
+import DepartmentCard from "../../Components/DepartmentCard/DepartmentCard";
 
 const ControlPanelDepartamentPage: React.FC = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const [isDepartmentModalOpen, setDepartmentModalOpen] = useState(false);
+  const [isOperatorModalOpen, setOperatorModalOpen] = useState(false);
+
+  const { departments, isLoading, error, fetchDepartments } =
+    useDepartmentStore();
+
+  useEffect(() => {
+    void fetchDepartments();
+  }, [fetchDepartments]);
 
   return (
     <div className="page-container">
@@ -15,68 +26,51 @@ const ControlPanelDepartamentPage: React.FC = () => {
       </div>
 
       <div className="control-panel-container">
-        <div>
-         <h4>Gestionare departamente</h4>
-        </div>
         <div className="add-department-container">
           <div className="title">
-           
+            <h4>Gestionare departamente</h4>
+            <p>Administrează structurile Primăriei și operatorii aferenți.</p>
           </div>
           <div>
-            <button className="add-operator-button">Adaugă Operator</button>
-            <button className="add-department-button"
-            onClick={() => setIsModalOpen(true)}
-          >Adaugă departament</button>
+            <button
+              className="add-operator-button"
+              onClick={() => setOperatorModalOpen(true)}
+            >
+              Adaugă operator
+            </button>
+            <button
+              className="add-department-button"
+              onClick={() => setDepartmentModalOpen(true)}
+            >
+              Adaugă departament
+            </button>
+          </div>
         </div>
-        </div>
 
-        <div className="control-panel-grid">
-          <CardControlPanel
-            icon={<FaShieldAlt />}
-            title="Poliție"
-            description="Vezi rapoartele de poliție"
-            to="/politie"
-          />
+        {error && <div className="department-error">{error}</div>}
 
-          <CardControlPanel
-            icon={<FaMoneyBillWave />}
-            title="Taxe"
-            description="Vezi rapoartele de taxe"
-            to="/taxe"
-          />
-
-          <CardControlPanel
-            icon={<FaCity />}
-            title="Urbanism"
-            description="Vezi rapoartele de urbanism"
-            to="/urbanism"
-          />
-
-          <CardControlPanel
-            icon={<FaShieldAlt />}
-            title="Poliție"
-            description="Vezi rapoartele de poliție"
-            to="/politie"
-          />
-
-          <CardControlPanel
-            icon={<FaMoneyBillWave />}
-            title="Taxe"
-            description="Vezi rapoartele de taxe"
-            to="/taxe"
-          />
-
-          <CardControlPanel
-            icon={<FaCity />}
-            title="Urbanism"
-            description="Vezi rapoartele de urbanism"
-            to="/urbanism"
-          />
-        </div>
+        {isLoading ? (
+          <div className="department-loading">Se încarcă departamentele...</div>
+        ) : (
+          <div className="control-panel-grid">
+            {departments.map((department) => (
+              <DepartmentCard
+                key={department.id}
+                department={department}
+                onView={(id) => navigate(`/departament-admin/${id}`)}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
       <AddDepartmentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isDepartmentModalOpen}
+        onClose={() => setDepartmentModalOpen(false)}
+      />
+      <AddOperatorModal
+        isOpen={isOperatorModalOpen}
+        onClose={() => setOperatorModalOpen(false)}
       />
     </div>
   );
