@@ -7,6 +7,7 @@ import CreateReportPage from "./Pages/Report/CreateReportPage";
 import "./App.css";
 import ControlPanelPage from "./Pages/ControlPanelPage/ControlPanelPage";
 import ManageReportPage from "./Pages/ManageReportPage/ManageReportPage";
+import ControlPanelDepartamentPage from "./Pages/ControlPanelDepartmentPage/ControlPanelDepartmentPage";
 
 export default function App() {
   return (
@@ -51,6 +52,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ManageReportPage />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/administrare-departamente"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ControlPanelDepartamentPage/>
             </ProtectedRoute>
           }
         />
