@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -244,6 +245,14 @@ public class ComplaintServiceImpl implements ComplaintService {
                 .orElseThrow(() -> new EntityNotFoundException("Utilizatorul nu există"));
 
         return complaintRepository.findByUser_Id(user.getId()).stream()
+                .map(ComplaintDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ComplaintDto> getComplaintsForAnalysis() {
+        return complaintRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).stream()
                 .map(ComplaintDto::from)
                 .collect(Collectors.toList());
     }
