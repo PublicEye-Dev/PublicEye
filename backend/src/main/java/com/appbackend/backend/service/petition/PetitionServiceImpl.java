@@ -131,6 +131,12 @@ public class PetitionServiceImpl implements PetitionService {
     }
 
     @Override
+    public Petition getPetition(Long id) {
+        return petitionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Petitia nu a fost gasita"));
+    }
+
+    @Override
     @Transactional
     public PetitionResponse updatePetition(Long petitionId, PetitionUpdateRequest request) {
         Petition petition = petitionRepository.findById(petitionId)
@@ -149,6 +155,11 @@ public class PetitionServiceImpl implements PetitionService {
         Petition petition = petitionRepository.findById(petitionId)
                 .orElseThrow(() -> new EntityNotFoundException("Petitia nu există"));
 
+        if (petition.refreshStatusIfExpired() == PetitionStatus.CLOSED) {
+            petitionRepository.save(petition);
+            throw new IllegalStateException("Petitia este închisă și nu mai poate fi semnată");
+        }
+
         User currentUser = getCurrentUser();
 
         if (petitionVoteRepository.existsByPetition_IdAndUser_Id(petition.getId(), currentUser.getId())) {
@@ -164,6 +175,16 @@ public class PetitionServiceImpl implements PetitionService {
         petition.setVotes(petition.getVotes() + 1);
         Petition updated = petitionRepository.save(petition);
         return PetitionResponse.from(updated);
+    }
+
+    @Override
+    public void deletePetition(Long petitionId) {
+        Petition petition = petitionRepository.findById(petitionId)
+                .orElseThrow(() -> new EntityNotFoundException("Petitia nu a fost gasita"));
+
+        if(petition.getStatus().equals(PetitionStatus.CLOSED) || petition.getStatus().equals(PetitionStatus.BANNED)) {
+            petitionRepository.delete(petition);
+        }
     }
 
     private User getCurrentUser() {

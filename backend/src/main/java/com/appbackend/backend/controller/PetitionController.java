@@ -4,18 +4,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.appbackend.backend.entity.Petition;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.appbackend.backend.dto.PagedResponse;
@@ -57,6 +50,13 @@ public class PetitionController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<PetitionResponse> getPetition(@PathVariable Long id) {
+        Petition petition = petitionService.getPetition(id);
+        return ResponseEntity.ok(PetitionResponse.from(petition));
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -103,5 +103,12 @@ public class PetitionController {
             @PathVariable Long petitionId,
             @RequestBody @Valid PetitionVoteRequest request) {
         return ResponseEntity.ok(petitionService.votePetition(petitionId, request));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deletePetition(@PathVariable(name = "id") Long id) {
+        petitionService.deletePetition(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -22,6 +22,8 @@ import lombok.Data;
 @Data
 @Table(name = "petitions")
 public class Petition {
+    private static final int ACTIVE_DAYS_LIMIT = 60;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,5 +70,20 @@ public class Petition {
         if (status == null) {
             status = PetitionStatus.ACTIVE;
         }
+    }
+
+    public PetitionStatus refreshStatusIfExpired() {
+        if (createdAt == null) {
+            return status;
+        }
+
+        if (status == PetitionStatus.ACTIVE) {
+            LocalDateTime expirationMoment = createdAt.plusDays(ACTIVE_DAYS_LIMIT);
+            if (!expirationMoment.isAfter(LocalDateTime.now())) {
+                status = PetitionStatus.CLOSED;
+            }
+        }
+
+        return status;
     }
 }

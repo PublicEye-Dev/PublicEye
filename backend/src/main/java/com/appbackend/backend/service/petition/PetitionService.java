@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.appbackend.backend.entity.Petition;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.appbackend.backend.dto.PagedResponse;
@@ -33,7 +34,11 @@ public interface PetitionService {
             String sortDir
     );
 
+    Petition getPetition(Long id);
+
     PetitionResponse updatePetition(Long petitionId, PetitionUpdateRequest request);
 
     PetitionResponse votePetition(Long petitionId, PetitionVoteRequest request);
+
+    void deletePetition(Long petitionId);
 }

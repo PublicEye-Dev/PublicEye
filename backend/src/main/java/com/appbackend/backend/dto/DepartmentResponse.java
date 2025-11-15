@@ -1,6 +1,5 @@
 package com.appbackend.backend.dto;
 
-import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.entity.Department;
 
 import java.util.List;
