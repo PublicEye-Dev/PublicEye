@@ -1,0 +1,10 @@
+.page-navbar {
+  width: 100%;
+}
+
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+

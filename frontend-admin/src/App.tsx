@@ -11,6 +11,7 @@ import ControlPanelDepartamentPage from "./Pages/ControlPanelDepartmentPage/Cont
 import ViewAllReportsPage from "./Pages/ViewAllReportsPage/ViewAllReportsPage";
 import EditCategoryPage from "./Pages/EditCategoryPage/EditCategoryPage";
 import ViewAllUsersPage from "./Pages/ViewAllUsersPage/ViewAllUsersPage";
+import ViewAllCategoriesPage from "./Pages/ViewAllCategoriesPage/ViewAllCategoriesPage";
 
 export default function App() {
   return (
@@ -88,6 +89,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ViewAllUsersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gestionare-categorii"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ViewAllCategoriesPage />
             </ProtectedRoute>
           }
         />

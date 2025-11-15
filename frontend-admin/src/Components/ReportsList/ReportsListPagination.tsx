@@ -8,6 +8,7 @@ interface ReportsListPaginationProps {
   onPageChange: (page: number) => void;
   onSizeChange: (size: number) => void;
   isDisabled?: boolean;
+  entityLabel?: string;
 }
 
 export default function ReportsListPagination({
@@ -18,6 +19,7 @@ export default function ReportsListPagination({
   onPageChange,
   onSizeChange,
   isDisabled,
+  entityLabel = "sesizări",
 }: ReportsListPaginationProps) {
   const canGoPrev = page > 0;
   const canGoNext = page < totalPages - 1;
@@ -25,7 +27,7 @@ export default function ReportsListPagination({
   return (
     <div className="reports-pagination">
       <div className="page-indicator">
-        Pagina {totalPages ? page + 1 : 0} din {totalPages || 0} • {totalElements} sesizări
+        Pagina {totalPages ? page + 1 : 0} din {totalPages || 0} • {totalElements} {entityLabel}
       </div>
 
       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
