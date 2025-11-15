@@ -30,7 +30,7 @@ public class Complaint {
     @Column
     private Double longitude;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
     private String imagePublicId;

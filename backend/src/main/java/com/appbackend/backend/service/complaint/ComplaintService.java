@@ -1,13 +1,14 @@
 package com.appbackend.backend.service.complaint;
 
-import com.appbackend.backend.dto.ComplaintDto;
-import com.appbackend.backend.dto.PagedResponse;
-import com.appbackend.backend.enums.Status;
+import java.io.IOException;
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
+import com.appbackend.backend.dto.ComplaintDto;
+import com.appbackend.backend.dto.PagedResponse;
+import com.appbackend.backend.enums.Status;
 
 public interface ComplaintService{
     ComplaintDto createComplaint(String description,
@@ -30,4 +31,5 @@ public interface ComplaintService{
     List<ComplaintDto> searchComplaints(String keyword);
 
     ComplaintDto getComplaintById(Long id);
+    List<ComplaintDto> getComplaintsByUser(Long userId);
 }
