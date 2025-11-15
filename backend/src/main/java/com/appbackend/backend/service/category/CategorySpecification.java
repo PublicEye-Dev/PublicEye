@@ -53,5 +53,26 @@ public final class CategorySpecification {
             return cb.or(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public static Specification<Category> withFilters(Long departmentId, String departmentName) {
+        return (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (departmentId != null) {
+                predicates.add(cb.equal(root.join("department", JoinType.LEFT).get("id"), departmentId));
+            }
+
+            if (departmentName != null && !departmentName.isBlank()) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(root.join("department", JoinType.LEFT).get("name")),
+                                "%" + departmentName.toLowerCase() + "%"
+                        )
+                );
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
 }
 

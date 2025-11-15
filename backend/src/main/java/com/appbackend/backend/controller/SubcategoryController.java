@@ -37,10 +37,20 @@ public class SubcategoryController {
     public ResponseEntity<PagedResponse<SubcategoryResponse>> getAllSubcategories(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Long categoryId
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String categoryName
     ) {
-        PagedResponse<SubcategoryResponse> response = subcategoryService.getAllSubcategories(page, size, categoryId);
+         PagedResponse<SubcategoryResponse> response = subcategoryService.getAllSubcategories(page, size, categoryId, categoryName);
         return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
+    @GetMapping("/list/{categoryId}")
+    public ResponseEntity<List<SubcategoryResponse>> getAllSubcategoriesList(
+            @PathVariable Long categoryId
+    ) {
+        List<SubcategoryResponse> responses = subcategoryService.getAllSubcategoriesList(categoryId);
+        return ResponseEntity.ok(responses);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")

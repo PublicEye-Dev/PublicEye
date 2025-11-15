@@ -2,11 +2,19 @@ package com.appbackend.backend.service.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.appbackend.backend.dto.CategoryCreateRequest;
+import com.appbackend.backend.dto.CategoryResponse;
+import com.appbackend.backend.dto.PagedResponse;
 import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.entity.Department;
 import com.appbackend.backend.entity.Subcategory;
@@ -68,8 +76,50 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public PagedResponse<CategoryResponse> getCategoriesForDisplay(
+            Long departmentId,
+            String departmentName,
+            int page,
+            int size,
+            String sortBy,
+            String sortDir) {
+
+        int validatedPage = Math.max(page, 0);
+        int validatedSize = size <= 0 ? 10 : size;
+        String validatedSortBy = (sortBy == null || sortBy.isBlank()) ? "name" : sortBy;
+        Sort.Direction direction;
+        try {
+            direction = Sort.Direction.fromString(sortDir);
+        } catch (Exception ex) {
+            direction = Sort.Direction.ASC;
+        }
+
+        Pageable pageable = PageRequest.of(validatedPage, validatedSize, Sort.by(direction, validatedSortBy));
+        Specification<Category> spec = CategorySpecification.withFilters(departmentId, departmentName);
+
+        Page<Category> result = categoryRepository.findAll(spec, pageable);
+
+        List<CategoryResponse> content = result.getContent().stream()
+                .map(CategoryResponse::from)
+                .collect(Collectors.toList());
+
+        return new PagedResponse<>(
+                content,
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages(),
+                result.isFirst(),
+                result.isLast()
+        );
+    }
+
+    @Override
+    public List<CategoryResponse> getAllCategoriesAsList() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(CategoryResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Override

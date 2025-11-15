@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appbackend.backend.dto.CategoryCreateRequest;
 import com.appbackend.backend.dto.CategoryResponse;
+import com.appbackend.backend.dto.PagedResponse;
 import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.service.category.CategoryService;
 
@@ -27,11 +28,12 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @PostMapping("/create-category")
     public ResponseEntity<CategoryResponse> createCategory(
             @Valid @RequestBody CategoryCreateRequest request) {
@@ -40,21 +42,42 @@ public class CategoryController {
                 .body(CategoryResponse.from(category));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-        List<CategoryResponse> categories = categoryService.getAllCategories()
-                .stream()
-                .map(CategoryResponse::from)
-                .collect(Collectors.toList());
+    public ResponseEntity<PagedResponse<CategoryResponse>> getAllCategories(
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) String departmentName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "ASC") String sortDir) {
+
+        PagedResponse<CategoryResponse> categories = categoryService.getCategoriesForDisplay(
+                departmentId,
+                departmentName,
+                page,
+                size,
+                sortBy,
+                sortDir
+        );
         return ResponseEntity.ok(categories);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
+    @GetMapping("/list")
+    public ResponseEntity<List<CategoryResponse>> getAllCategoriesList() {
+        List<CategoryResponse> categories = categoryService.getAllCategoriesAsList();
+        return ResponseEntity.ok(categories);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
         return ResponseEntity.ok(CategoryResponse.from(category));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @PutMapping("/{id}/details")
     public ResponseEntity<CategoryResponse> updateCategoryDetails(
             @PathVariable Long id,
@@ -64,12 +87,14 @@ public class CategoryController {
         return ResponseEntity.ok(CategoryResponse.from(category));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @GetMapping("/department/{departmentId}")
     public ResponseEntity<List<CategoryResponse>> getCategoriesByDepartment(@PathVariable Long departmentId) {
         List<CategoryResponse> categories = categoryService.getAllCategoriesByDepartmentId(departmentId)
@@ -79,6 +104,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @GetMapping("/search")
     public ResponseEntity<List<CategoryResponse>> searchCategories(@RequestParam String keyword) {
         List<CategoryResponse> categories = categoryService.searchCategories(keyword)
@@ -88,6 +114,7 @@ public class CategoryController {
         return ResponseEntity.ok(categories);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @PutMapping("/{categoryId}/subcategories")
     public ResponseEntity<CategoryResponse> updateCategorySubcategories(
             @PathVariable Long categoryId,
