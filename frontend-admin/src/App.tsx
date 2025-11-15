@@ -8,6 +8,7 @@ import "./App.css";
 import ControlPanelPage from "./Pages/ControlPanelPage/ControlPanelPage";
 import ManageReportPage from "./Pages/ManageReportPage/ManageReportPage";
 import ControlPanelDepartamentPage from "./Pages/ControlPanelDepartmentPage/ControlPanelDepartmentPage";
+import ViewAllReportsPage from "./Pages/ViewAllReportsPage/ViewAllReportsPage";
 
 export default function App() {
   return (
@@ -40,6 +41,14 @@ export default function App() {
           }
         />
         <Route
+          path="/sesizari"
+          element={
+            <ProtectedRoute roles={["ADMIN", "OPERATOR"]}>
+              <ViewAllReportsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/departament-admin"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
@@ -47,19 +56,19 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-         <Route
-          path="/administrare-sesizare"
+        <Route
+          path="/administrare-sesizare/:id"
           element={
-            <ProtectedRoute roles={["ADMIN"]}>
+            <ProtectedRoute roles={["ADMIN", "OPERATOR"]}>
               <ManageReportPage />
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/administrare-departamente"
           element={
             <ProtectedRoute roles={["ADMIN"]}>
-              <ControlPanelDepartamentPage/>
+              <ControlPanelDepartamentPage />
             </ProtectedRoute>
           }
         />

@@ -3,6 +3,8 @@ package com.appbackend.backend.dto;
 import com.appbackend.backend.entity.Complaint;
 import com.appbackend.backend.enums.Status;
 
+import java.time.LocalDateTime;
+
 public record ComplaintDto(
         Long id,
         String description,
@@ -15,7 +17,8 @@ public record ComplaintDto(
         Long categoryId,
         String categoryName,
         Long subcategoryId,
-        Long userId
+        Long userId,
+        String createdAt
 ) {
     public static ComplaintDto from(Complaint complaint) {
         return new ComplaintDto(
@@ -30,7 +33,8 @@ public record ComplaintDto(
                 complaint.getCategory().getId(),
                 complaint.getCategory().getName(),
                 complaint.getSubcategory().getId(),
-                complaint.getUser().getId()
+                complaint.getUser().getId(),
+                complaint.getCreatedAt().toString()
         );
     }
 }

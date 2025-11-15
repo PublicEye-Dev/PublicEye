@@ -106,9 +106,9 @@ const Navbar: React.FC = () => {
 
                 <button
                   className="dropdown-item"
-                  onClick={() => handleProtectedNav("/departament-admin")}
+                  onClick={() => handleProtectedNav("/card-control-panel")}
                 >
-                  Departamente
+                  Tablou de bord
                 </button>
 
                 <button

@@ -1,0 +1,37 @@
+.view-all-reports-page {
+  min-height: 100vh;
+  background: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-all-reports-content {
+  flex: 1;
+  padding: 2rem 2.5rem;
+}
+
+.reports-page-kicker {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: #475569;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.view-all-reports-content h1 {
+  margin: 0.3rem 0;
+  font-size: 2rem;
+  color: #0f172a;
+}
+
+.view-all-reports-content p {
+  margin: 0;
+  color: #475569;
+}
+
+@media (max-width: 768px) {
+  .view-all-reports-content {
+    padding: 1.25rem;
+  }
+}
+
