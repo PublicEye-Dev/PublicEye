@@ -1,6 +1,6 @@
 .control-panel-container {
     width: 100%;
-    padding: 80px;
+    padding: 20px 80px;
     box-sizing: border-box; 
 }
 
@@ -44,6 +44,20 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+
+}
+
+.add-operator-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: rgb(34, 34, 220); 
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
 
 }
 

@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../Components/Layout/Navbar/Navbar";
 import CardControlPanel from "../../Components/CardControlPanel/CardControlPanel";
 import { FaShieldAlt, FaMoneyBillWave, FaCity } from "react-icons/fa";
 import "./ControlPanelDepartmentPage.css";
+import AddDepartmentModal from "../../Components/AddDepartmentModal/AddDepartmentModal";
 
 const ControlPanelDepartamentPage: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="page-container">
       <div className="page-navbar">
@@ -12,11 +15,19 @@ const ControlPanelDepartamentPage: React.FC = () => {
       </div>
 
       <div className="control-panel-container">
+        <div>
+         <h4>Gestionare departamente</h4>
+        </div>
         <div className="add-department-container">
           <div className="title">
-            <h4>Gestionare departamente</h4>
+           
           </div>
-          <button className="add-department-button">Adaugă departament</button>
+          <div>
+            <button className="add-operator-button">Adaugă Operator</button>
+            <button className="add-department-button"
+            onClick={() => setIsModalOpen(true)}
+          >Adaugă departament</button>
+        </div>
         </div>
 
         <div className="control-panel-grid">
@@ -63,6 +74,10 @@ const ControlPanelDepartamentPage: React.FC = () => {
           />
         </div>
       </div>
+      <AddDepartmentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
