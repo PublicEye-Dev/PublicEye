@@ -1,0 +1,28 @@
+.body{
+  margin: 0;
+  padding: 0; 
+}
+
+
+.map-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f1f5f9;
+  box-sizing: border-box;
+}
+
+.map-page-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+
+.map-page-content {
+  position:relative;
+  flex: 1;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
