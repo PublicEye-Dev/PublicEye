@@ -22,6 +22,7 @@ public interface CategoryService {
     List<CategoryResponse> getAllCategoriesAsList();
     List<Category> getAllCategoriesByDepartmentId(Long departmentId);
     List<Category> searchCategories(String keyword);
-    Category updateSubcategories(Long categoryId, Long newSubcategoryId, Long exSubcategoryId);
+    Category addSubcategoryToCategory(Long categoryId, Long subcategoryId);
+    Category removeSubcategoryFromCategory(Long categoryId, Long subcategoryId);
     Category updateDetails(Long categoryId, CategoryCreateRequest request);
 }

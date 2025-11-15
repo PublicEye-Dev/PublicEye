@@ -96,7 +96,7 @@ public class CategoryController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @GetMapping("/department/{departmentId}")
-    public ResponseEntity<List<CategoryResponse>> getCategoriesByDepartment(@PathVariable Long departmentId) {
+    public ResponseEntity<List<CategoryResponse>> getCategoriesByDepartment(@PathVariable Long  departmentId) {
         List<CategoryResponse> categories = categoryService.getAllCategoriesByDepartmentId(departmentId)
                 .stream()
                 .map(CategoryResponse::from)
@@ -115,13 +115,22 @@ public class CategoryController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-    @PutMapping("/{categoryId}/subcategories")
-    public ResponseEntity<CategoryResponse> updateCategorySubcategories(
+    @PostMapping("/{categoryId}/subcategories/{subcategoryId}")
+    public ResponseEntity<CategoryResponse> addSubcategoryToCategory(
             @PathVariable Long categoryId,
-            @RequestParam Long newSubcategoryId,
-            @RequestParam Long exSubcategoryId
+            @PathVariable Long subcategoryId
     ) {
-        Category category = categoryService.updateSubcategories(categoryId, newSubcategoryId, exSubcategoryId);
+        Category category = categoryService.addSubcategoryToCategory(categoryId, subcategoryId);
+        return ResponseEntity.ok(CategoryResponse.from(category));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+    @DeleteMapping("/{categoryId}/subcategories/{subcategoryId}")
+    public ResponseEntity<CategoryResponse> removeSubcategoryFromCategory(
+            @PathVariable Long categoryId,
+            @PathVariable Long subcategoryId
+    ) {
+        Category category = categoryService.removeSubcategoryFromCategory(categoryId, subcategoryId);
         return ResponseEntity.ok(CategoryResponse.from(category));
     }
 }
