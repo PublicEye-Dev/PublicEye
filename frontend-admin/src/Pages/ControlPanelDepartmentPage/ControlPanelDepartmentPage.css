@@ -21,3 +21,32 @@
 .page-navbar {
     width: 100%;
 }
+.add-department-container {
+    max-width: 1400px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+}
+
+.add-department-container .title h4 {
+    margin: 0;
+    font-size: 30px; 
+    font-weight: 600;
+}
+.add-department-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: rgb(34, 34, 220); 
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+}
+
+.add-department-button:hover {
+    background-color: rgb(6, 6, 187);
+}
