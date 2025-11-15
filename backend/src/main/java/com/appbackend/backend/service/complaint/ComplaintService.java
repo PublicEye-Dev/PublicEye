@@ -33,4 +33,5 @@ public interface ComplaintService{
 
     ComplaintDto getComplaintById(Long id);
     List<ComplaintDto> getComplaintsByUser(Long userId);
+    List<ComplaintDto> getComplaintsForAnalysis();
 }

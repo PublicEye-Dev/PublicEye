@@ -1,5 +1,7 @@
 package com.appbackend.backend.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.appbackend.backend.dto.AlertaDto;
+import com.appbackend.backend.dto.ComplaintDto;
 import com.appbackend.backend.dto.DepartmentCreateRequest;
 import com.appbackend.backend.dto.DepartmentOperatorCreateRequest;
 import com.appbackend.backend.dto.DepartmentResponse;
@@ -17,6 +21,8 @@ import com.appbackend.backend.dto.UserDto;
 import com.appbackend.backend.entity.Department;
 import com.appbackend.backend.entity.User;
 import com.appbackend.backend.service.admin.AdminService;
+import com.appbackend.backend.service.ai.GeminiAnalysisService;
+import com.appbackend.backend.service.complaint.ComplaintService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +35,8 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 
     private final AdminService adminService;
+    private final ComplaintService complaintService;
+    private final GeminiAnalysisService geminiAnalysisService;
 
     @PostMapping("/departments")
     public ResponseEntity<DepartmentResponse> createDepartment(
@@ -51,6 +59,13 @@ public class AdminController {
             @PathVariable Long departmentId) {
         UserDto operator = adminService.getDepartmentOperator(departmentId);
         return ResponseEntity.ok(operator);
+    }
+
+    @PostMapping("/alerts/analyze")
+    public ResponseEntity<List<AlertaDto>> analyzeComplaintsForAlerts() {
+        List<ComplaintDto> complaints = complaintService.getComplaintsForAnalysis();
+        List<AlertaDto> alerts = geminiAnalysisService.analizeazaSesizari(complaints);
+        return ResponseEntity.ok(alerts);
     }
 
 }
