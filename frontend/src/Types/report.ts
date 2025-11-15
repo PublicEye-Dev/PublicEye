@@ -15,7 +15,9 @@ export interface Report {
   latitude: number;
   longitude: number;
   categoryId: number;
+  categoryName?: string;
   subcategoryId: number;
+  subcategoryName?: string;
   userId: number;
   createdAt?: string;
   updatedAt?: string;
@@ -44,5 +46,6 @@ export interface ReportIssue {
   description: string;
   imageUrl: string | null;
   updatedAtLabel?: string;
+  categoryName?: string;
 }
 

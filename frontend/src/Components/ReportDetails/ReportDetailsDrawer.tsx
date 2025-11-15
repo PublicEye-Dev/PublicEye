@@ -2,6 +2,9 @@ import "./ReportDetailsDrawer.css";
 import type { Report } from "../../Types/report";
 import { getStatusLabel } from "../../Utils/reportHelpers";
 import { useReportStore } from "../../Store/reportStore";
+import { useAuthStore } from "../../Store/authStore";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
 
 interface ReportDetailsDrawerProps {
   report: Report | null;
@@ -17,14 +20,42 @@ export default function ReportDetailsDrawer({
   onClose,
 }: ReportDetailsDrawerProps) {
   const { voteReportById } = useReportStore();
+  const { token } = useAuthStore();
+  const navigate = useNavigate();
+  const drawerRef = useRef<HTMLDivElement | null>(null);
 
   const handleVote = () => {
     if (!report) return;
+    if (!token) {
+      navigate("/login?next=/");
+      return;
+    }
     voteReportById(report.id);
   };
 
+  useEffect(() => {
+    if (!report) {
+      return;
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        drawerRef.current &&
+        event.target instanceof Node &&
+        !drawerRef.current.contains(event.target)
+      ) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [report, onClose]);
+
   return (
-    <aside className="report-drawer">
+    <aside className="report-drawer" ref={drawerRef}>
       <button className="report-drawer-close" onClick={onClose}>
         ×
       </button>
@@ -46,8 +77,10 @@ export default function ReportDetailsDrawer({
         <>
           <header className="report-drawer-header">
             <div>
-              <p className="report-drawer-label">Sesizare #{report.id}</p>
-              <h2>{report.description}</h2>
+              <p className="report-drawer-label">
+                {report.categoryName || `Categorie #${report.categoryId}`}
+              </p>
+              <h2>Sesizare #{report.id}</h2>
             </div>
             <span
               className={`report-status report-status-${report.status.toLowerCase()}`}
@@ -56,18 +89,24 @@ export default function ReportDetailsDrawer({
             </span>
           </header>
 
+          <p className="report-drawer-description">{report.description}</p>
+
           <ul className="report-drawer-meta">
             <li>
-              <strong>Voturi</strong>
-              <span>{report.votes}</span>
+              <span className="report-drawer-meta-label">Voturi</span>
+              <span className="report-drawer-meta-value">{report.votes}</span>
             </li>
             <li>
-              <strong>Latitudine</strong>
-              <span>{report.latitude}</span>
+              <span className="report-drawer-meta-label">Latitudine</span>
+              <span className="report-drawer-meta-value">
+                {report.latitude}
+              </span>
             </li>
             <li>
-              <strong>Longitudine</strong>
-              <span>{report.longitude}</span>
+              <span className="report-drawer-meta-label">Longitudine</span>
+              <span className="report-drawer-meta-value">
+                {report.longitude}
+              </span>
             </li>
           </ul>
 
@@ -78,6 +117,10 @@ export default function ReportDetailsDrawer({
           )}
 
           <footer className="report-drawer-footer">
+            <div className="report-drawer-votes">
+              <span className="report-drawer-votes-count">{report.votes}</span>
+              <span className="report-drawer-votes-label">susținători</span>
+            </div>
             <button onClick={handleVote}>Susține această sesizare</button>
           </footer>
         </>
@@ -85,4 +128,3 @@ export default function ReportDetailsDrawer({
     </aside>
   );
 }
-
