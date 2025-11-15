@@ -1,0 +1,125 @@
+.categories-page-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.categories-page-title {
+  margin: 0 0 1.5rem;
+  font-size: 2rem;
+  color: #0f172a;
+}
+
+.categories-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.categories-filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.categories-filters input,
+.categories-filters select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #cbd5f5;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.categories-filters input {
+  min-width: 240px;
+}
+
+.categories-filters select {
+  min-width: 200px;
+  background: #fff;
+}
+
+.categories-search-button {
+  border: none;
+  border-radius: 10px;
+  background: #e0edff;
+  color: #0c4a6e;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.categories-search-button:hover {
+  background: #c3dbff;
+}
+
+.add-category-button {
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  border: none;
+  background: rgb(34, 34, 220);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.add-category-button:hover {
+  background: rgb(8, 8, 181);
+}
+
+.categories-table-wrapper {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.categories-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.categories-table thead {
+  background: #eff3ff;
+  text-align: left;
+}
+
+.categories-table th,
+.categories-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.95rem;
+}
+
+.categories-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.categories-table-empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: #475569;
+}
+
+.categories-table-action {
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.categories-error {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
