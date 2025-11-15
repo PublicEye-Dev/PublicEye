@@ -11,7 +11,7 @@ import {
 } from "react-leaflet";
 import "./TimisoaraMap.css";
 import rawGeoJson from "../../Data/Map/export.geojson?raw";
-import type { ReportIssue } from "../../Types/report";
+import type { ReportIssue, Status } from "../../Types/report";
 import { getStatusLabel } from "../../Utils/reportHelpers";
 import { useReportStore } from "../../Store/reportStore";
 
@@ -83,7 +83,23 @@ const boundaryMask = timisoaraBoundary
 
 const TIMISOARA_CENTER: LatLngExpression = [45.7489, 21.2087];
 const DEFAULT_ZOOM = 13;
-const issueIcon = new L.Icon.Default();
+const markerIcons: Record<Status, L.DivIcon> = {
+  DEPUSA: createStatusIcon("depusa"),
+  PLANIFICATA: createStatusIcon("planificata"),
+  IN_LUCRU: createStatusIcon("in-lucru"),
+  REZOLVATA: createStatusIcon("rezolvata"),
+  REDIRECTIONATA: createStatusIcon("redirectionata"),
+};
+
+function createStatusIcon(modifier: string): L.DivIcon {
+  return L.divIcon({
+    className: `report-marker-icon report-marker-icon--${modifier}`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -28],
+    html: '<span class="report-marker-bullet"></span>',
+  });
+}
 const fallbackBounds = L.latLngBounds([
   [45.6, 20.9],
   [45.95, 21.4],
@@ -169,13 +185,13 @@ export default function TimisoaraMap({
 
       {issues.map((issue) => {
         const statusLabel = getStatusLabel(issue.status);
-        const statusClass = issue.status.toLowerCase();
-
+        const icon = markerIcons[issue.status] ?? markerIcons.DEPUSA;
+        const statusModifier = issue.status.toLowerCase();
         return (
           <Marker
             key={issue.id}
             position={issue.position}
-            icon={issueIcon}
+            icon={icon}
             eventHandlers={{
               click: () => {
                 loadReportDetails(Number(issue.id));
@@ -185,18 +201,30 @@ export default function TimisoaraMap({
           >
             <Popup className="issue-popup">
               <div className="issue-popup-header">
-                <h3>{issue.title}</h3>
-                <span className={`issue-status issue-status-${statusClass}`}>
-                  {statusLabel}
-                </span>
+                <h3>{issue.categoryName || issue.title}</h3>
               </div>
 
               <p className="issue-popup-description">{issue.description}</p>
 
+              <div
+                className={`issue-popup-status issue-status-${statusModifier}`}
+              >
+                {statusLabel}
+              </div>
+
               <div className="issue-popup-meta">
-                <span>
-                  <strong>Voturi:</strong> {issue.votes}
-                </span>
+                <div className="issue-popup-meta-item">
+                  <span className="issue-popup-meta-label">Voturi</span>
+                  <span className="issue-popup-meta-value">{issue.votes}</span>
+                </div>
+                {issue.updatedAtLabel && (
+                  <div className="issue-popup-meta-item">
+                    <span className="issue-popup-meta-label">Actualizată</span>
+                    <span className="issue-popup-meta-value">
+                      {issue.updatedAtLabel}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {issue.imageUrl && (

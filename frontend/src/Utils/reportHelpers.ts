@@ -21,6 +21,7 @@ export function reportToIssue(report: Report): ReportIssue {
           year: "numeric",
         })
       : undefined,
+    categoryName: report.categoryName,
   };
 }
 
