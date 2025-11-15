@@ -67,7 +67,7 @@ const ControlPanelPage: React.FC = () => {
             icon={<FaEnvelope />}
             title="Petiții"
             description="Vezi petițiile primite"
-            to="/petitii"
+            to="/petitii-admin"
           />
         </div>
       </div>

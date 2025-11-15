@@ -2,6 +2,8 @@ package com.appbackend.backend.dto;
 
 import com.appbackend.backend.entity.Petition;
 
+import java.time.LocalDateTime;
+
 public record PetitionResponse(
         Long id,
         String title,
@@ -10,6 +12,8 @@ public record PetitionResponse(
         String imagePublicId,
         String problem,
         String solution,
+        String status,
+        LocalDateTime createdAt,
         String officialResponse,
         int votes,
         Long userId,
@@ -39,6 +43,8 @@ public record PetitionResponse(
                 petition.getImagePublicId(),
                 petition.getProblem(),
                 petition.getSolution(),
+                petition.getStatus().toString(),
+                petition.getCreatedAt(),
                 petition.getOfficialResponse(),
                 petition.getVotes(),
                 userId,
