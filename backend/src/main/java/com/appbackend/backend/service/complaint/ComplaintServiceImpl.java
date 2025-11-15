@@ -1,6 +1,7 @@
 package com.appbackend.backend.service.complaint;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -253,6 +254,24 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Transactional(readOnly = true)
     public List<ComplaintDto> getComplaintsForAnalysis() {
         return complaintRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).stream()
+                .map(ComplaintDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ComplaintDto> getComplaintsInInterval(LocalDate dataInceput, LocalDate dataSfarsit) {
+        if (dataInceput == null || dataSfarsit == null) {
+            throw new IllegalArgumentException("Intervalul de date trebuie specificat");
+        }
+        if (dataInceput.isAfter(dataSfarsit)) {
+            throw new IllegalArgumentException("Data de început nu poate fi ulterioară datei de sfârșit");
+        }
+
+        LocalDateTime startDateTime = dataInceput.atStartOfDay();
+        LocalDateTime endDateTime = dataSfarsit.plusDays(1).atStartOfDay().minusNanos(1);
+
+        return complaintRepository.findAllByCreatedAtBetween(startDateTime, endDateTime).stream()
                 .map(ComplaintDto::from)
                 .collect(Collectors.toList());
     }

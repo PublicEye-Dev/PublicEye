@@ -17,6 +17,8 @@ import com.appbackend.backend.dto.ComplaintDto;
 import com.appbackend.backend.dto.DepartmentCreateRequest;
 import com.appbackend.backend.dto.DepartmentOperatorCreateRequest;
 import com.appbackend.backend.dto.DepartmentResponse;
+import com.appbackend.backend.dto.RaportGeneralDto;
+import com.appbackend.backend.dto.RaportRequestDto;
 import com.appbackend.backend.dto.UserDto;
 import com.appbackend.backend.entity.Department;
 import com.appbackend.backend.entity.User;
@@ -66,6 +68,23 @@ public class AdminController {
         List<ComplaintDto> complaints = complaintService.getComplaintsForAnalysis();
         List<AlertaDto> alerts = geminiAnalysisService.analizeazaSesizari(complaints);
         return ResponseEntity.ok(alerts);
+    }
+
+    @PostMapping("/genereaza-raport")
+    public ResponseEntity<RaportGeneralDto> genereazaRaportAgregat(
+            @Valid @RequestBody RaportRequestDto requestDto
+    ) {
+        if (requestDto.dataInceput().isAfter(requestDto.dataSfarsit())) {
+            throw new IllegalArgumentException("Data de început nu poate fi după data de sfârșit");
+        }
+
+        List<ComplaintDto> sesizari = complaintService.getComplaintsInInterval(
+                requestDto.dataInceput(),
+                requestDto.dataSfarsit()
+        );
+
+        RaportGeneralDto raport = geminiAnalysisService.genereazaRaportAgregat(sesizari);
+        return ResponseEntity.ok(raport);
     }
 
 }
