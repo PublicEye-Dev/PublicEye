@@ -61,6 +61,19 @@ export default function PetitionDetailPage() {
               )}
             </div>
 
+            <section className="petition-section">
+              <h2>Statusul petiției</h2>
+              <p className="petition-text">
+                <strong>Status:</strong> {petition.status ?? "NECUNOSCUT"}
+              </p>
+              <p className="petition-text">
+                <strong>Răspuns oficial:</strong>{" "}
+                {petition.officialResponse && petition.officialResponse.trim().length > 0
+                  ? petition.officialResponse
+                  : "— nu a fost publicat încă —"}
+              </p>
+            </section>
+
             {petition.imageUrl && (
               <div className="petition-image-box">
                 <img src={petition.imageUrl} alt="Imagine petiție" />
