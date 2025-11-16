@@ -12,6 +12,7 @@ import ViewAllReportsPage from "./Pages/ViewAllReportsPage/ViewAllReportsPage";
 import EditCategoryPage from "./Pages/EditCategoryPage/EditCategoryPage";
 import ViewAllUsersPage from "./Pages/ViewAllUsersPage/ViewAllUsersPage";
 import ViewAllCategoriesPage from "./Pages/ViewAllCategoriesPage/ViewAllCategoriesPage";
+import ViewAllSubcategoriesPage from "./Pages/ViewAllSubcategoriesPage/ViewAllSubcategoriesPage";
 import AdminPetitionsListPage from "./Pages/AdminPetitionsListPage/AdminPetitionsListPage";
 import AdminPetitionDetailPage from "./Pages/AdminPetitionDetailPage/AdminPetitionDetailPage";
 import MyAccountPage from "./Pages/MyAccountPage/MyAccountPage";
@@ -100,6 +101,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ViewAllCategoriesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gestionare-subcategorii"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <ViewAllSubcategoriesPage />
             </ProtectedRoute>
           }
         />
