@@ -87,7 +87,7 @@ export async function listReports(
 
 export async function createReport(
   request: ReportCreateRequest,
-  imageFile: File
+  imageFile?: File | null
 ): Promise<Report> {
   const formData = new FormData();
 
@@ -95,7 +95,9 @@ export async function createReport(
     "data",
     new Blob([JSON.stringify(request)], { type: "application/json" })
   );
-  formData.append("image", imageFile);
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
 
   const response = await reportApiClient.post<Report>(
     "/add-complaint",

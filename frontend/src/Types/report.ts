@@ -29,8 +29,8 @@ export interface ReportCreateRequest {
   categoryId: number;
   subcategoryId: number;
   userId: number;
-  latitude: number;
-  longitude: number;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface ReportListParams {

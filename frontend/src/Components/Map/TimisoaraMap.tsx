@@ -8,6 +8,7 @@ import {
   TileLayer,
   GeoJSON,
   ZoomControl,
+  useMapEvent,
 } from "react-leaflet";
 import "./TimisoaraMap.css";
 import rawGeoJson from "../../Data/Map/export.geojson?raw";
@@ -21,8 +22,11 @@ type FeatureProperties = { name?: string; [key: string]: unknown };
 type TimisoaraMapProps = {
   issues?: ReportIssue[];
   alerte?: Alerta[];
-  onMarkerClick?: (issueId: string) => void;
+  onMarkerClick?: (id: number) => void;
   onAlertaClick?: (alerta: Alerta) => void;
+  selectLocationMode?: boolean;
+  selectedLocation?: { lat: number; lng: number } | null;
+  onSelectLocation?: (coords: { lat: number; lng: number }) => void;
 };
 
 const featureCollection = JSON.parse(rawGeoJson) as GeoJSON.FeatureCollection<
@@ -189,11 +193,29 @@ function isPointInPolygon(lat: number, lng: number, feature: GeoJSON.Feature<Geo
   return !insideAnyHole;
 }
 
+function MapClickHandler({
+  enabled,
+  onClick,
+}: { enabled: boolean; onClick?: (coords: { lat: number; lng: number }) => void }) {
+  useMapEvent("click", (e) => {
+    if (!enabled || !onClick) return;
+    const { lat, lng } = e.latlng;
+    if (!isPointInTimisoara(lat, lng)) {
+      return;
+    }
+    onClick({ lat, lng });
+  });
+  return null;
+}
+
 export default function TimisoaraMap({
   issues = [],
   alerte = [],
   onMarkerClick,
   onAlertaClick,
+  selectLocationMode = false,
+  selectedLocation = null,
+  onSelectLocation,
 }: TimisoaraMapProps) {
   const { loadReportDetails } = useReportStore();
   const mapRef = useRef<LeafletMap | null>(null);
@@ -229,6 +251,8 @@ export default function TimisoaraMap({
       scrollWheelZoom
       zoomControl={false}
     >
+      <MapClickHandler enabled={selectLocationMode} onClick={onSelectLocation} />
+
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -288,7 +312,7 @@ export default function TimisoaraMap({
             eventHandlers={{
               click: () => {
                 loadReportDetails(Number(issue.id));
-                onMarkerClick?.(issue.id);
+                onMarkerClick?.(Number(issue.id));
               },
             }}
           >
@@ -392,6 +416,13 @@ export default function TimisoaraMap({
           </Marker>
         );
       })}
+
+      {/* marker pentru locația selectată (doar în modul de selecție) */}
+      {selectLocationMode && selectedLocation && (
+        <Marker position={[selectedLocation.lat, selectedLocation.lng] as LatLngExpression}>
+          <Popup>Locație selectată</Popup>
+        </Marker>
+      )}
     </MapContainer>
   );
 }
