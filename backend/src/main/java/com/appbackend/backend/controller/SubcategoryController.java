@@ -96,4 +96,11 @@ public class SubcategoryController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(responses);
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
+    @GetMapping("/available/{categoryId}")
+    public ResponseEntity<List<SubcategoryResponse>> getAvailableSubcategories(@PathVariable Long categoryId) {
+        List<SubcategoryResponse> responses = subcategoryService.getAvailableSubcategories(categoryId);
+        return ResponseEntity.ok(responses);
+    }
 }

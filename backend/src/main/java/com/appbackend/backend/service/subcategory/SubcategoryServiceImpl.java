@@ -118,4 +118,12 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     public List<Subcategory> getSubcategoriesByCategoryId(Long id) {
         return subcategoryRepository.findAllByCategoryId(id);
     }
+
+    @Override
+    public List<SubcategoryResponse> getAvailableSubcategories(Long categoryId) {
+        List<Subcategory> available = subcategoryRepository.findAvailableSubcategories(categoryId);
+        return available.stream()
+                .map(SubcategoryResponse::from)
+                .toList();
+    }
 }

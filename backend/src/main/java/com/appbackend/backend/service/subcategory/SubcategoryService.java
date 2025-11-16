@@ -15,4 +15,5 @@ public interface SubcategoryService {
     Subcategory updateSubcategory(Long id, SubcategoryCreateRequest request);
     void deleteSubcategory(Long id);
     List<Subcategory> getSubcategoriesByCategoryId(Long id);
+    List<SubcategoryResponse> getAvailableSubcategories(Long categoryId);
 }

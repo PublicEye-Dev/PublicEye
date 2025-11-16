@@ -1,112 +1,363 @@
-import React, { useState } from 'react';
-import './EditCategoryCard.css';
+import { useMemo, useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import axios, { isAxiosError } from "axios";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import "./EditCategoryCard.css";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
+const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, "");
+
+const adminApi = axios.create({
+  baseURL: normalizedBaseUrl,
+  timeout: 30000,
+  headers: { "Content-Type": "application/json" },
+});
+const getErrorMessage = (error: unknown, fallback: string) => {
+  if (isAxiosError(error)) {
+    const payload = error.response?.data;
+    if (typeof payload === "string") {
+      return payload;
+    }
+    if (payload && typeof payload === "object" && "message" in payload) {
+      const maybeMessage = (payload as Record<string, unknown>).message;
+      if (typeof maybeMessage === "string") {
+        return maybeMessage;
+      }
+    }
+    if (error.message) {
+      return error.message;
+    }
+  }
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+  return fallback;
+};
+
+
+adminApi.interceptors.request.use(
+  (config) => {
+    const stored = localStorage.getItem("admin-auth-storage");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        const token = parsed?.state?.token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      } catch {
+        // ignore parsing errors
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+adminApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem("admin-auth-storage");
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+interface DepartmentOption {
+  id: number;
+  name: string;
+}
+
+interface SubcategoryOption {
+  id: number;
+  name: string;
+}
 
 const EditCategoryCard: React.FC = () => {
-const [currentStatus, setCurrentStatus] = useState('Nouă');
-const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+  const categoryIdParam = params.get("id");
+  const categoryId = categoryIdParam ? Number(categoryIdParam) : null;
 
-  const confirmDelete = () => {
-    console.log('Sesizare ștearsă!');
-    setShowDeleteModal(false);
+  const [name, setName] = useState("");
+  const [departmentId, setDepartmentId] = useState("");
+  const [departments, setDepartments] = useState<DepartmentOption[]>([]);
+  const [allSubcategories, setAllSubcategories] = useState<SubcategoryOption[]>(
+    []
+  );
+  const [addSubcategoryId, setAddSubcategoryId] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  // allSubcategories deja conține doar subcategoriile disponibile (datorită endpoint-ului /api/subcategories/available/{categoryId})
+  const filteredAddOptions = useMemo(() => allSubcategories, [allSubcategories]);
+
+  const fetchAvailableSubcategories = async (currentCategoryId: number) => {
+    const response = await adminApi.get<
+      Array<{ id: number; name: string }>
+    >(`/api/subcategories/available/${currentCategoryId}`);
+    return response.data ?? [];
   };
 
-  const cancelDelete = () => {
-    setShowDeleteModal(false);
+  const refreshData = async () => {
+    if (!categoryId) {
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const [categoryResponse, departmentsResponse, availableResponse] =
+        await Promise.all([
+          adminApi.get(`/api/categories/${categoryId}`),
+          adminApi.get<DepartmentOption[]>("/api/departments"),
+          fetchAvailableSubcategories(categoryId),
+        ]);
+
+      const category = categoryResponse.data;
+      setName(category?.name ?? "");
+      setDepartmentId(
+        category?.departmentId !== null && category?.departmentId !== undefined
+          ? String(category.departmentId)
+          : ""
+      );
+
+      setDepartments(departmentsResponse.data ?? []);
+      setAllSubcategories(availableResponse ?? []);
+      setAddSubcategoryId("");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Nu s-au putut încărca datele categoriei."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDeleteReport = () => {
-    setShowDeleteModal(true);
+  useEffect(() => {
+    if (!categoryId) {
+      setError("ID-ul categoriei este invalid. Întoarce-te la lista de categorii.");
+      setIsLoading(false);
+      return;
+    }
+    void refreshData();
+  }, [categoryId]);
+
+  const handleSave = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!categoryId) {
+      return;
+    }
+
+    if (!name.trim()) {
+      setError("Numele categoriei este obligatoriu.");
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await adminApi.put(`/api/categories/${categoryId}/details`, {
+        name: name.trim(),
+        departmentId: departmentId ? Number(departmentId) : null,
+      });
+
+      setSuccess("Categoria a fost actualizată cu succes.");
+      await refreshData();
+    } catch (err) {
+      setError(getErrorMessage(err, "Nu s-au putut salva modificările. Încearcă din nou."));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleSaveStatus = () => {
-    console.log('Se salvează statusul:', currentStatus);
+  const handleAddSubcategory = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!categoryId || !addSubcategoryId) {
+      setError("Selectează o subcategorie pentru a o adăuga.");
+      return;
+    }
+
+    setIsAdding(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await adminApi.post(
+        `/api/categories/${categoryId}/subcategories/${addSubcategoryId}`
+      );
+      setSuccess("Subcategoria a fost adăugată cu succes.");
+      await refreshData();
+    } catch (err) {
+      setError(
+        getErrorMessage(
+          err,
+          "Nu s-a putut adăuga subcategoria selectată."
+        )
+      );
+    } finally {
+      setIsAdding(false);
+    }
   };
 
+  const handleConfirmDelete = async () => {
+    if (!categoryId) {
+      return;
+    }
+    setIsDeleting(true);
+    setError(null);
+    try {
+      await adminApi.delete(`/api/categories/${categoryId}`);
+      navigate("/gestionare-categorii");
+    } catch (err) {
+      setError(
+        getErrorMessage(
+          err,
+          "Nu s-a putut șterge categoria. Încearcă din nou."
+        )
+      );
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="categorie-card">Se încarcă detaliile categoriei...</div>;
+  }
+
+  if (!categoryId) {
     return (
-        <div className="categorie-card">
-  
-  <h2>Categorie</h2>
-  
-  <div className="categorie-card-body">
-    
-    <form className="form-stanga">
-      
-      <div className="form-group">
-        <label htmlFor="categorie-id">ID:</label>
-        <input 
-          type="text" 
-          id="categorie-id" 
-          value="1" 
-          readOnly 
-        />
+      <div className="categorie-card">
+        ID-ul categoriei nu a fost specificat. Întoarce-te la lista de categorii.
       </div>
-      
-      <div className="form-group">
-        <label htmlFor="categorie-nume">Nume:</label>
-        <input 
-          type="text" 
-          id="categorie-nume" 
-          placeholder="ex: Probleme stradale" 
-        />
-      </div>
-      
-      <div className="form-group">
-        <label htmlFor="categorie-departament">Departament:</label>
-        <select id="categorie-departament">
-          <option value="">Alege un departament...</option>
-          <option value="politie">Poliție</option>
-          <option value="taxe">Taxe</option>
-          <option value="urbanism">Urbanism</option>
-        </select>
-      </div>
-      
-      <button type="submit" className="button-salvare" onClick={handleSaveStatus}>Salvare</button>
-      
-    </form>
-    
-    <div className="form-dreapta">
-      
-      <div className="form-group">
-        <label htmlFor="subcategorie-add">Adaugă subcategorie:</label>
-        <select id="subcategorie-add">
-          <option value="">Alege subcategoria...</option>
-          <option value="subcat1">Subcategorie Nouă 1</option>
-          <option value="subcat2">Subcategorie Nouă 2</option>
-        </select>
-      </div>
-      
-      <div className="form-group">
-        <label htmlFor="subcategorie-extract">Extrage subcategorie:</label>
-        <select id="subcategorie-extract">
-          <option value="">Alege subcategoria...</option>
-          <option value="subcatA">Subcategorie Existentă A</option>
-          <option value="subcatB">Subcategorie Existentă B</option>
-        </select>
-      </div>
-      
-      <button type="button" className="button-sterge" onClick={handleDeleteReport}>
-        Șterge subcategorie
-      </button>
-      
-    </div>
-    
-  </div>
-  
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="delete-modal">
-            <h3>Confirmă ștergerea</h3>
-            <p>Ești sigur că vrei să ștergi această sesizare? Datele șterse nu mai pot fi recuperate.</p>
-            <div className="modal-actions">
-              <button className="modal-button confirm-delete" onClick={confirmDelete}>Șterge</button>
-              <button className="modal-button cancel-delete" onClick={cancelDelete}>Anulează</button>
-            </div>
+    );
+  }
+
+  return (
+    <div className="categorie-card">
+      <h2>Categorie</h2>
+
+      {error && <p className="categories-error">{error}</p>}
+      {success && <p className="categories-success">{success}</p>}
+
+      <div className="categorie-card-body">
+        <form className="form-stanga" onSubmit={handleSave}>
+          <div className="form-group">
+            <label htmlFor="categorie-id">ID:</label>
+            <input type="text" id="categorie-id" value={categoryId} readOnly />
           </div>
-        </div>
-      )}
-</div>
-    )
-        
+
+          <div className="form-group">
+            <label htmlFor="categorie-nume">Nume:</label>
+            <input
+              type="text"
+              id="categorie-nume"
+              placeholder="ex: Probleme stradale"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              disabled={isSaving}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="categorie-departament">Departament:</label>
+            <select
+              id="categorie-departament"
+              value={departmentId}
+              onChange={(event) => setDepartmentId(event.target.value)}
+              disabled={isSaving}
+            >
+              <option value="">Alege un departament...</option>
+              {departments.map((department) => (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="button-salvare"
+            disabled={isSaving}
+          >
+            {isSaving ? "Se salvează..." : "Salvare"}
+          </button>
+        </form>
+
+        <form
+          className="form-dreapta"
+          onSubmit={(event) => {
+            event.preventDefault();
+          }}
+        >
+          <div className="form-section">
+            <div className="form-group">
+              <label htmlFor="subcategorie-add">Adaugă subcategorie:</label>
+              <select
+                id="subcategorie-add"
+                value={addSubcategoryId}
+                onChange={(event) => setAddSubcategoryId(event.target.value)}
+                disabled={isAdding || isSaving}
+              >
+                <option value="">Alege subcategoria...</option>
+                {filteredAddOptions.map((subcategory) => (
+                  <option key={subcategory.id} value={subcategory.id}>
+                    {subcategory.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="button"
+              className="button-salvare"
+              onClick={(event) => void handleAddSubcategory(event)}
+              disabled={!addSubcategoryId || isAdding || isSaving}
+            >
+              {isAdding ? "Se adaugă..." : "Adaugă subcategorie"}
+            </button>
+          </div>
+
+          <button
+            type="button"
+            className="button-sterge delete-category"
+            onClick={() => setShowDeleteModal(true)}
+            disabled={isDeleting}
+          >
+            Șterge categoria
+          </button>
+        </form>
+      </div>
+
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        title="Confirmă ștergerea"
+        message="Sunteți sigur că doriți să ștergeți această categorie?"
+        confirmLabel="Confirmă"
+        cancelLabel="Anulează"
+        isProcessing={isDeleting}
+        onConfirm={() => void handleConfirmDelete()}
+        onCancel={() => setShowDeleteModal(false)}
+      />
+    </div>
+  );
 };
 
 export default EditCategoryCard;

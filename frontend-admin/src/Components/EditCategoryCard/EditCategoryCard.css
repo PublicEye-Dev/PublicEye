@@ -16,6 +16,15 @@
   color: #111827; 
 }
 
+.categories-success {
+  background: #dcfce7;
+  color: #166534;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
 .categorie-card-body {
   display: flex;
   gap: 32px; 
@@ -31,6 +40,25 @@
 .form-stanga {
   padding-right: 32px;
   border-right: 1px solid #e2e8f0; 
+}
+
+.form-dreapta {
+  padding-left: 32px;
+  border-left: 1px solid #e2e8f0;
+  gap: 24px;
+}
+
+.form-section {
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .form-group {
@@ -102,6 +130,10 @@
 .form-dreapta .button-sterge {
   margin-top: auto; 
   
+}
+
+.delete-category {
+  margin-top: auto;
 }
 .modal-overlay {
   position: fixed;

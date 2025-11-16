@@ -150,39 +150,30 @@ public class CategoryServiceImpl implements CategoryService {
         Subcategory subcategory = subcategoryRepository.findById(subcategoryId)
                 .orElseThrow(() -> new EntityNotFoundException("Subcategoria nu a fost gasita"));
 
-        if (subcategory.getCategory() != null && !subcategory.getCategory().equals(category)) {
-            throw new IllegalStateException("Subcategoria aparține deja altei categorii");
+        // Forțează inițializarea lazy loading pentru a accesa categoria curentă
+        Category currentCategory = subcategory.getCategory();
+
+        // Dacă subcategoria aparține deja unei alte categorii, o detașăm din categoria veche
+        if (currentCategory != null && !currentCategory.getId().equals(categoryId)) {
+            // Asigură-te că lista de subcategorii este inițializată
+            currentCategory.getSubcategories().size(); // Forțează inițializarea lazy
+            currentCategory.getSubcategories().remove(subcategory);
+            categoryRepository.saveAndFlush(currentCategory); // Salvează și flush categoria veche
         }
 
-        if (category.getSubcategories().contains(subcategory)) {
-            return category;
-        }
-
-        category.getSubcategories().add(subcategory);
-        subcategory.setCategory(category);
-        subcategoryRepository.save(subcategory);
-
-        return categoryRepository.save(category);
-    }
-
-    @Override
-    @Transactional
-    public Category removeSubcategoryFromCategory(Long categoryId, Long subcategoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Categoria nu a fost gasita"));
-
-        Subcategory subcategory = subcategoryRepository.findById(subcategoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Subcategoria nu a fost gasita"));
-
+        // Asigură-te că lista de subcategorii este inițializată
+        category.getSubcategories().size(); // Forțează inițializarea lazy
+        // Dacă subcategoria nu este deja în categoria nouă, o adăugăm
         if (!category.getSubcategories().contains(subcategory)) {
-            throw new IllegalArgumentException("Subcategoria nu aparține acestei categorii");
+            category.getSubcategories().add(subcategory);
         }
 
-        category.getSubcategories().remove(subcategory);
-        subcategory.setCategory(null);
-        subcategoryRepository.save(subcategory);
+        // Setăm noua categorie pentru subcategorie
+        subcategory.setCategory(category);
+        subcategoryRepository.saveAndFlush(subcategory);
 
-        return categoryRepository.save(category);
+        // Salvează categoria nouă și returnează-o
+        return categoryRepository.saveAndFlush(category);
     }
 
     @Override
