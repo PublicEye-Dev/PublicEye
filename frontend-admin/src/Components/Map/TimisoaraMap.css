@@ -197,3 +197,79 @@
   display: block;
 }
 
+/* Stiluri pentru markerii de alerte pulsatili */
+.alerta-marker-icon {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background: transparent !important;
+  border: none !important;
+  position: relative;
+  z-index: 1000;
+}
+
+.alerta-marker-pulse {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  border-radius: 50% !important;
+  background-color: #ef4444 !important;
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 1), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  animation: pulse-alerta 1.5s infinite !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 1001 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@keyframes pulse-alerta {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0), 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Stiluri pentru popup-ul de alerte */
+.alerta-popup {
+  width: 260px;
+}
+
+.alerta-popup-header {
+  margin-bottom: 0.5rem;
+}
+
+.alerta-popup-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.alerta-popup-zone {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.alerta-popup-zone strong {
+  color: #0f172a;
+}
+
+.alerta-popup-description {
+  margin: 0.5rem 0 0;
+  line-height: 1.4;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+

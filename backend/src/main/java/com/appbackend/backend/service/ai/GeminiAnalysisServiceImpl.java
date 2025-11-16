@@ -33,9 +33,11 @@ public class GeminiAnalysisServiceImpl implements GeminiAnalysisService {
               "alerte": [
                 {
                   "tipPericol": "string - tipul pericolului identificat",
-                  "zona": "string - zona sau adresa relevantă",
+                  "zona": "string - numele cartierului din Timișoara dedus din coordonate (ex: Complexul Studențesc, Elisabetin). Evită adrese vagi; dacă nu poți stabili cartierul, setează \"zona\" la \"NECUNOSCUT\"",
                   "descriereAlerta": "string - rezumatul riscului",
-                  "idSesizariAsociate": [lista de ID-uri long]
+                  "idSesizariAsociate": [lista de ID-uri long],
+                  "latitude": number - latitudinea medie a sesizărilor asociate sau latitudinea primei sesizări,
+                  "longitude": number - longitudinea medie a sesizărilor asociate sau longitudinea primei sesizări
                 }
               ]
             }
@@ -132,6 +134,12 @@ public class GeminiAnalysisServiceImpl implements GeminiAnalysisService {
                 Nu returna niciodată lista `alerte` goală; dacă nu identifici un pericol clar, setează `tipPericol` la "NECLAR" și explică de ce situația trebuie monitorizată.
                 Răspunde numai în limba română.
                 Nu folosi backticks, nu încadra JSON-ul în blocuri de cod și nu adăuga text suplimentar.
+
+                Reguli suplimentare pentru zona/cartier:
+                - Completează câmpul `zona` cu numele cartierului din Timișoara, dedus din coordonatele sesizărilor asociate (media sau prima sesizare), ex: "Complexul Studențesc", "Elisabetin", "Circumvalațiunii".
+                - Dacă sesizările au cartiere diferite, alege cartierul predominant (majoritar) sau cel al coordonatelor medii.
+                - Evită adrese generice; dacă nu poți stabili cartierul, setează `zona` la "NECUNOSCUT".
+
                 %s
                 Lista completă a sesizărilor (JSON):
                 %s
