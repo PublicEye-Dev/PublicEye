@@ -6,6 +6,8 @@ import CreatePetitionPage from "./Pages/CreatePetitionPage/CreatePetitionPage";
 import CreateReportPage from "./Pages/CreateReportPage/CreateReportPage";
 import ProfilePage from "./Pages/ProfilePage/ProfilePage";
 import MyReportsPage from "./Pages/MyReportsPage/MyReportsPage";
+import MyPetitionsPage from "./Pages/MyPetitionsPage/MyPetitionsPage";
+import PetitionsPage from "./Pages/PetitionsPage/PetitionsPage";
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
         <Route path="/adauga-sesizare" element={<CreateReportPage />} />
         <Route path="/profil" element={<ProfilePage />} />
         <Route path="/sesizarile-mele" element={<MyReportsPage />} />
+        <Route path="/petitiile-mele" element={<MyPetitionsPage />} />
+        <Route path="/petitii" element={<PetitionsPage />} />
         <Route path="/" element={<MapPage />} />
       </Routes>
     </BrowserRouter>
