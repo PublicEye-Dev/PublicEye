@@ -135,5 +135,10 @@ export async function getAlerte(): Promise<import("../Types/alert").Alerta[]> {
   return response.data;
 }
 
+export async function getUserReports(userId: number): Promise<Report[]> {
+  const response = await reportApiClient.get<Report[]>(`/user/${userId}`);
+  return response.data;
+}
+
 export { reportApiClient };
 
