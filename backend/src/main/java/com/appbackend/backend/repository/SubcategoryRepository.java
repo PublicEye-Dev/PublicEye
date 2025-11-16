@@ -19,4 +19,7 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long>,
     List<Subcategory> findAllByCategoryId(Long id);
 
     Page<Subcategory> findAllByCategory_Id(Long id, Pageable pageable);
+
+    @Query("SELECT s FROM Subcategory s WHERE s.category.id != :categoryId")
+    List<Subcategory> findAvailableSubcategories(Long categoryId);
 }

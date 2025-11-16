@@ -123,14 +123,4 @@ public class CategoryController {
         Category category = categoryService.addSubcategoryToCategory(categoryId, subcategoryId);
         return ResponseEntity.ok(CategoryResponse.from(category));
     }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-    @DeleteMapping("/{categoryId}/subcategories/{subcategoryId}")
-    public ResponseEntity<CategoryResponse> removeSubcategoryFromCategory(
-            @PathVariable Long categoryId,
-            @PathVariable Long subcategoryId
-    ) {
-        Category category = categoryService.removeSubcategoryFromCategory(categoryId, subcategoryId);
-        return ResponseEntity.ok(CategoryResponse.from(category));
-    }
 }
