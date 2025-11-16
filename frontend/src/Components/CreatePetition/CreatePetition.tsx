@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import './CreatePetition.css';
+import { createPetition } from '../../Services/petitionService';
+import { getUserInfo } from '../../Services/accountService';
+import { useNavigate } from 'react-router-dom';
 
 interface PetitionData {
   title: string;
@@ -12,6 +15,7 @@ interface PetitionData {
 }
 
 const CreatePetition: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<PetitionData>({
     title: '',
     recipient: '',
@@ -24,6 +28,9 @@ const CreatePetition: React.FC = () => {
 
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -77,19 +84,80 @@ const CreatePetition: React.FC = () => {
     isFormValid = baseFieldsValid && initiatorFieldsValid;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid) {
       console.warn("Form is not valid!");
       return;
     }
-    console.log("Petition data to submit:", formData);
-    // ... submit logic here
+
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      let userId: number | undefined;
+      if (!isAnonymous) {
+        const user = await getUserInfo();
+        userId = user.id;
+      }
+
+      await createPetition(
+        {
+          title: formData.title.trim(),
+          receiver: formData.recipient.trim(),
+          problem: formData.contextProblem.trim(),
+          solution: formData.contextSolution.trim(),
+          userId,
+        },
+        formData.image
+      );
+
+      setSuccess("Petiția a fost creată cu succes.");
+      // Redirect scurt după mesaj
+      setTimeout(() => {
+        navigate("/petitiile-mele");
+      }, 800);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "A apărut o eroare la crearea petiției."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="petition-page">
       <form className="petition-form-container" onSubmit={handleSubmit}>
+        {error && (
+          <div
+            style={{
+              background: '#f8d7da',
+              color: '#721c24',
+              padding: '10px 12px',
+              borderRadius: 8,
+              marginBottom: 12,
+            }}
+          >
+            {error}
+          </div>
+        )}
+        {success && (
+          <div
+            style={{
+              background: '#d4edda',
+              color: '#155724',
+              padding: '10px 12px',
+              borderRadius: 8,
+              marginBottom: 12,
+            }}
+          >
+            {success}
+          </div>
+        )}
         
         {/* --- 1. Image Upload --- */}
         <div className="image-upload-area">
@@ -203,9 +271,9 @@ const CreatePetition: React.FC = () => {
           <button
             type="submit"
             className="submit-button"
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
           >
-            Creează Petiția
+            {isSubmitting ? 'Se creează...' : 'Creează Petiția'}
           </button>
         </div>
 

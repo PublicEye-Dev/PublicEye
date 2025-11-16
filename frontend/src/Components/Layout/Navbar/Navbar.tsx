@@ -117,6 +117,27 @@ const Navbar: React.FC = () => {
                 </button>
 
                 <button
+                  className="dropdown-item"
+                  onClick={() => handleProtectedNav("/petitie")}
+                >
+                  Depune Petiție
+                </button>
+
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleProtectedNav("/petitiile-mele")}
+                >
+                  Petițiile Mele
+                </button>
+
+                <button
+                  className="dropdown-item"
+                  onClick={() => handleProtectedNav("/petitii")}
+                >
+                  Petiții
+                </button>
+
+                <button
                   onClick={handleLogout}
                   className="dropdown-item dropdown-item--button"
                 >
@@ -134,6 +155,27 @@ const Navbar: React.FC = () => {
                   onClick={() => goLogin("/adauga-sesizare")}
                 >
                   Depune sesizare
+                </button>
+
+                <button
+                  className="dropdown-item"
+                  onClick={() => goLogin("/petitie")}
+                >
+                  Depune Petiție
+                </button>
+
+                <button
+                  className="dropdown-item"
+                  onClick={() => goLogin("/petitiile-mele")}
+                >
+                  Petițiile Mele
+                </button>
+
+                <button
+                  className="dropdown-item"
+                  onClick={() => goLogin("/petitii")}
+                >
+                  Petiții
                 </button>
               </>
             )}

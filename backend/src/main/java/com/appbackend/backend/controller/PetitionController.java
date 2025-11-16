@@ -65,9 +65,9 @@ public class PetitionController {
         return ResponseEntity.ok(petitionService.getPetitionsByUser(userId));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin")
-    public ResponseEntity<PagedResponse<PetitionResponse>> getPetitionsForAdmin(
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'OPERATOR')")
+    @GetMapping("/get-petitions-paginated")
+    public ResponseEntity<PagedResponse<PetitionResponse>> getPetitions(
             @RequestParam(name = "status", required = false) PetitionStatus status,
             @RequestParam(name = "createdAfter", required = false) LocalDateTime createdAfter,
             @RequestParam(name = "createdBefore", required = false) LocalDateTime createdBefore,

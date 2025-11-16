@@ -1,0 +1,103 @@
+.my-petitions-container {
+  padding: 16px;
+}
+
+.my-petitions-title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.title-divider {
+  margin: 8px 0 16px;
+}
+
+.loading-area {
+  text-align: center;
+  padding: 32px 0;
+  color: #555;
+}
+
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-box {
+  padding: 12px;
+  background: #f8d7da;
+  color: #721c24;
+  border-radius: 8px;
+}
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+}
+
+.petitions-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.petition-card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #eaeaea;
+  padding: 12px 14px;
+}
+
+.petition-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.petition-id {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.petition-title {
+  margin: 4px 0 8px;
+  font-size: 1.05rem;
+}
+
+.petition-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.petition-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.status-icon {
+  color: #007bff;
+  display: inline-flex;
+  align-items: center;
+}
+
+.votes {
+  margin-left: auto;
+  color: #333;
+  font-weight: 600;
+}
+
