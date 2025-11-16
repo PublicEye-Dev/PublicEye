@@ -5,19 +5,10 @@ import type {
   PetitionStatus,
   PetitionUpdatePayload,
 } from "../Types/petition";
+import { departmentApi } from "./departmentService";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-
-const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, "");
-
-const petitionApi: AxiosInstance = axios.create({
-  baseURL: `${normalizedBaseUrl}/api/petitions`,
-  timeout: 30000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+// Reuse the authenticated admin axios instance to ensure consistent Authorization headers
+const petitionApi: AxiosInstance = departmentApi;
 
 petitionApi.interceptors.request.use(
   (config) => {
@@ -49,6 +40,10 @@ petitionApi.interceptors.response.use(
       } else if (payload?.message) {
         message = payload.message;
       }
+      if (error.response.status === 403) {
+        message =
+          "Nu aveți permisiunea de a accesa această resursă. Încercați să vă autentificați cu un cont ADMIN.";
+      }
       if (error.response.status === 401) {
         localStorage.removeItem("admin-auth-storage");
       }
@@ -78,7 +73,8 @@ export interface AdminPetitionQuery {
 export async function fetchAdminPetitions(
   params: AdminPetitionQuery
 ): Promise<PagedResponse<Petition>> {
-  const response = await petitionApi.get<PagedResponse<Petition>>("/admin", {
+  // Backend endpoint that supports ADMIN/USER/OPERATOR: /api/petitions/get-petitions-paginated
+  const response = await petitionApi.get<PagedResponse<Petition>>("/api/petitions/get-petitions-paginated", {
     params: {
       status:
         params.status && params.status !== "ALL" ? params.status : undefined,
@@ -94,7 +90,7 @@ export async function fetchAdminPetitions(
 }
 
 export async function getPetitionById(id: number): Promise<Petition> {
-  const response = await petitionApi.get<Petition>(`/${id}`);
+  const response = await petitionApi.get<Petition>(`/api/petitions/${id}`);
   return response.data;
 }
 
@@ -102,14 +98,11 @@ export async function updatePetitionStatus(
   id: number,
   payload: PetitionUpdatePayload
 ): Promise<Petition> {
-  const response = await petitionApi.patch<Petition>(
-    `/${id}/status`,
-    payload
-  );
+  const response = await petitionApi.patch<Petition>(`/api/petitions/${id}/status`, payload);
   return response.data;
 }
 
 export async function deletePetition(id: number): Promise<void> {
-  await petitionApi.delete(`/delete/${id}`);
+  await petitionApi.delete(`/api/petitions/delete/${id}`);
 }
 

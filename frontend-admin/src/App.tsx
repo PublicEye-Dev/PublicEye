@@ -15,6 +15,7 @@ import ViewAllCategoriesPage from "./Pages/ViewAllCategoriesPage/ViewAllCategori
 import ViewAllSubcategoriesPage from "./Pages/ViewAllSubcategoriesPage/ViewAllSubcategoriesPage";
 import AdminPetitionsListPage from "./Pages/AdminPetitionsListPage/AdminPetitionsListPage";
 import AdminPetitionDetailPage from "./Pages/AdminPetitionDetailPage/AdminPetitionDetailPage";
+import RaportsAIPage from "./Pages/RaportsAIPage/RaportsAIPage";
 import MyAccountPage from "./Pages/MyAccountPage/MyAccountPage";
 
 export default function App() {
@@ -109,6 +110,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <ViewAllSubcategoriesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/creare-rapoarte"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <RaportsAIPage />
             </ProtectedRoute>
           }
         />
