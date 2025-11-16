@@ -14,6 +14,7 @@ import ViewAllUsersPage from "./Pages/ViewAllUsersPage/ViewAllUsersPage";
 import ViewAllCategoriesPage from "./Pages/ViewAllCategoriesPage/ViewAllCategoriesPage";
 import AdminPetitionsListPage from "./Pages/AdminPetitionsListPage/AdminPetitionsListPage";
 import AdminPetitionDetailPage from "./Pages/AdminPetitionDetailPage/AdminPetitionDetailPage";
+import MyAccountPage from "./Pages/MyAccountPage/MyAccountPage";
 
 export default function App() {
   return (
@@ -115,6 +116,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={["ADMIN"]}>
               <AdminPetitionDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contul-meu"
+          element={
+            <ProtectedRoute roles={["ADMIN", "OPERATOR"]}>
+              <MyAccountPage />
             </ProtectedRoute>
           }
         />
