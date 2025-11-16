@@ -60,15 +60,23 @@ public class ComplaintServiceImpl implements ComplaintService {
         Subcategory subcategory = subcategoryRepository.findById(subcategoryId)
                 .orElseThrow(() -> new EntityNotFoundException("Subcategoria nu există"));
 
-        FileUploadService.UploadedImage uploaded = fileUploadService.uploadImage(image);
+        FileUploadService.UploadedImage uploaded = null;
+        if (image != null && !image.isEmpty()) {
+            uploaded = fileUploadService.uploadImage(image);
+        }
 
         Complaint complaint = new Complaint();
         complaint.setDescription(description);
         complaint.setCategory(category);
         complaint.setSubcategory(subcategory);
         complaint.setUser(user);
-        complaint.setImageUrl(uploaded.secureUrl());
-        complaint.setImagePublicId(uploaded.publicId());
+        if (uploaded != null) {
+            complaint.setImageUrl(uploaded.secureUrl());
+            complaint.setImagePublicId(uploaded.publicId());
+        } else {
+            complaint.setImageUrl(null);
+            complaint.setImagePublicId(null);
+        }
         complaint.setLatitude(latitude);
         complaint.setLongitude(longitude);
         complaint.setStatus(Status.DEPUSA);

@@ -2,18 +2,28 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../Store/authStore";
 import "./AddReportButton.css";
 
-export default function AddReportButton() {
+interface AddReportButtonProps {
+  onStartCreate?: () => void;
+}
+
+export default function AddReportButton({ onStartCreate }: AddReportButtonProps) {
   const navigate = useNavigate();
   const { token } = useAuthStore();
 
   const handleClick = () => {
     if (!token) {
-      // daca nu e logat, trimite-l la login si psstreaza destinatia dorita
+      // daca nu e logat, trimite-l la login si pastreaza destinatia dorita
       navigate("/login?next=/adauga-sesizare");
       return;
     }
 
-    // daca e logat, mergi direct la pagina de adaugare sesizare
+    // daca e logat si avem callback (pentru modal/selectie locatie), il folosim
+    if (onStartCreate) {
+      onStartCreate();
+      return;
+    }
+
+    // fallback: mergi direct la pagina de adaugare sesizare
     navigate("/adauga-sesizare");
   };
 

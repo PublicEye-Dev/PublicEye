@@ -10,6 +10,7 @@ import type { Alerta } from "../../Types/alert";
 import AddReportButton from "../../Components/AddReportButton/AddReportButton";
 import ReportDetailsDrawer from "../../Components/ReportDetails/ReportDetailsDrawer";
 import { getAlerte } from "../../Services/reportService";
+import { useNavigate } from "react-router-dom";
 
 export default function MapPage() {
   const {
@@ -24,9 +25,15 @@ export default function MapPage() {
   } = useReportStore();
 
   const [alerte, setAlerte] = useState<Alerta[]>([]);
-  const [selectedAlerta, setSelectedAlerta] = useState<Alerta | null>(null);
   const [isLoadingAlerte, setIsLoadingAlerte] = useState(false);
   const [alerteError, setAlerteError] = useState<string | null>(null);
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectLocationMode, setSelectLocationMode] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [selectError, setSelectError] = useState<string | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const navigate = useNavigate();
 
   // Încarcă sesizările și alertele simultan
   useEffect(() => {
@@ -35,12 +42,9 @@ export default function MapPage() {
       setAlerteError(null);
       try {
         const alerteData = await getAlerte();
-        console.log("Alerte încărcate:", alerteData.length, "alerte");
-        console.log("Date alerte:", alerteData);
         setAlerte(alerteData);
         await fetchReports();
       } catch (err) {
-        console.error("Eroare la încărcarea alertelor:", err);
         setAlerteError(
           err instanceof Error ? err.message : "Eroare la încărcarea alertelor"
         );
@@ -51,10 +55,52 @@ export default function MapPage() {
     fetchData();
   }, [fetchReports]);
 
-  //converteste Report[] in ReportIssue[] pt harta
+  // Obține locația curentă ca placeholder
+  useEffect(() => {
+    if (!isAddModalOpen) return;
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCurrentLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      () => {
+        setCurrentLocation(null);
+      },
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
+  }, [isAddModalOpen]);
+
+  // conversie Report[] in ReportIssue[] pt hartă
   const issues: ReportIssue[] = useMemo(() => {
     return reportsToIssues(reports);
   }, [reports]);
+
+  const startCreateFlow = () => {
+    setIsAddModalOpen(true);
+    setSelectLocationMode(false);
+    setSelectedLocation(null);
+    setSelectError(null);
+  };
+
+  const chooseWithoutLocation = () => {
+    setIsAddModalOpen(false);
+    navigate("/adauga-sesizare");
+  };
+
+  const chooseWithLocation = () => {
+    setSelectLocationMode(true);
+    setSelectError("Apasă pe hartă pentru a alege locația în Timișoara.");
+  };
+
+  const handleSelectLocation = (coords: { lat: number; lng: number }) => {
+    // ajunge aici doar dacă punctul este în interior (validarea e în TimisoaraMap)
+    setSelectedLocation(coords);
+    setSelectError(null);
+    setIsAddModalOpen(false);
+    setSelectLocationMode(false);
+    // navighează la formular cu coordonate presetate în query
+    navigate(`/adauga-sesizare?lat=${coords.lat}&lng=${coords.lng}`);
+  };
 
   return (
     <div className="map-page">
@@ -66,10 +112,12 @@ export default function MapPage() {
         <TimisoaraMap
           issues={issues}
           alerte={alerte}
-          onAlertaClick={setSelectedAlerta}
+          selectLocationMode={selectLocationMode}
+          selectedLocation={selectedLocation}
+          onSelectLocation={handleSelectLocation}
         />
         <ReportsFilter />
-        <AddReportButton />
+        <AddReportButton onStartCreate={startCreateFlow} />
 
         {(selectedReport || isLoadingDetails || detailsError) && (
           <ReportDetailsDrawer
@@ -80,29 +128,33 @@ export default function MapPage() {
           />
         )}
 
-        {/* Eliminat drawer-ul mare pentru alerte - folosim doar popup-ul mic pe hartă */}
-        {/* {selectedAlerta && (
-          <ReportDetailsDrawer
-            report={{
-              id: selectedAlerta.id,
-              description: selectedAlerta.descriere,
-              imageUrl: null,
-              imagePublicId: null,
-              votes: 0,
-              status: "DEPUSA",
-              latitude: selectedAlerta.latitude,
-              longitude: selectedAlerta.longitude,
-              categoryId: 0,
-              categoryName: selectedAlerta.tipPericol,
-              subcategoryId: 0,
-              userId: 0,
-              createdAt: selectedAlerta.createdAt,
-            }}
-            isLoading={false}
-            error={null}
-            onClose={() => setSelectedAlerta(null)}
-          />
-        )} */}
+        {/* Modal jos pentru alegere mod creare sesizare */}
+        {isAddModalOpen && (
+          <div className="pe-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+            <div className="pe-modal-sheet" onClick={(e) => e.stopPropagation()}>
+              <div className="pe-handle" />
+              <div className="pe-modal-header">
+                <h3>Adaugă sesizare</h3>
+              </div>
+              <p className="pe-modal-desc">Alege cum vrei să depui sesizarea.</p>
+              <div className="pe-modal-actions">
+                <button className="pe-btn" onClick={chooseWithoutLocation}>Fără locație</button>
+                <button className="pe-btn pe-btn-primary" onClick={chooseWithLocation}>Cu locație</button>
+              </div>
+              {currentLocation && (
+                <p className="pe-small-note">
+                  Locație curentă: {currentLocation.lat.toFixed(5)}, {currentLocation.lng.toFixed(5)}
+                </p>
+              )}
+              {selectError && <p className="pe-warning">{selectError}</p>}
+              {selectLocationMode && (
+                <p className="pe-small-note">
+                  Apasă pe hartă în interiorul municipiului pentru a confirma locația. Dacă dai click în afara limitelor, locația nu va fi acceptată.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
       </section>
 
       {error && <div className="map-page-error">{error}</div>}
