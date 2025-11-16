@@ -183,5 +183,21 @@ export async function searchReports(keyword: string): Promise<Report[]> {
   return response.data;
 }
 
+// Public API client pentru alerte (nu necesită autentificare)
+const publicApiClient: AxiosInstance = axios.create({
+  baseURL: `${normalizedBaseUrl}/api/public`,
+  timeout: 30000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+export async function getAlerte(): Promise<import("../Types/alert").Alerta[]> {
+  const response = await publicApiClient.get<import("../Types/alert").Alerta[]>(
+    "/alerte"
+  );
+  return response.data;
+}
+
 export { reportApiClient };
 

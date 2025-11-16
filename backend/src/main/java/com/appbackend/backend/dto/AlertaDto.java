@@ -6,7 +6,9 @@ public record AlertaDto(
         String tipPericol,
         String zona,
         String descriereAlerta,
-        List<Long> idSesizariAsociate
+        List<Long> idSesizariAsociate,
+        Double latitude,
+        Double longitude
 ) {
 }
 
