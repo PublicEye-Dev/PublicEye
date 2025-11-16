@@ -1,19 +1,47 @@
+.creaza-categorie-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+}
+
 .creaza-categorie-card {
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
   padding: 24px;
   max-width: 500px;
-  margin: 40px auto; 
   border: 1px solid #e2e8f0; 
 }
 
-.creaza-categorie-card h2 {
+.creaza-categorie-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.creaza-categorie-header h2 {
   font-size: 24px;
   font-weight: 700;
   margin-top: 0;
-  margin-bottom: 24px;
+  margin-bottom: 0;
   color: #111827; 
+}
+
+.close-button {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.close-button:hover {
+  color: #111827;
 }
 
 .form-group {
@@ -65,4 +93,15 @@
 
 .button-salvare:hover {
   background-color: #1d4ed8;
+}
+
+.button-salvare:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.categorie-error {
+  margin: 0 0 12px;
+  color: #b91c1c;
+  font-weight: 600;
 }

@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from "axios";
-import type { Category, CategoryCreatePayload } from "../Types/category";
+import type { Subcategory, SubcategoryCreatePayload } from "../Types/subcategory";
 import type { PagedResponse } from "../Types/pagination";
 
 const API_BASE_URL =
@@ -7,15 +7,15 @@ const API_BASE_URL =
 
 const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, "");
 
-const categoryApi: AxiosInstance = axios.create({
-  baseURL: `${normalizedBaseUrl}/api/categories`,
+const subcategoryApi: AxiosInstance = axios.create({
+  baseURL: `${normalizedBaseUrl}/api/subcategories`,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-categoryApi.interceptors.request.use(
+subcategoryApi.interceptors.request.use(
   (config) => {
     const stored = localStorage.getItem("admin-auth-storage");
     if (stored) {
@@ -34,7 +34,7 @@ categoryApi.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-categoryApi.interceptors.response.use(
+subcategoryApi.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
@@ -61,54 +61,54 @@ categoryApi.interceptors.response.use(
   }
 );
 
-export interface CategoryListParams {
+export interface SubcategoryListParams {
   page?: number;
   size?: number;
-  departmentId?: number;
-  departmentName?: string;
-  sortBy?: string;
-  sortDir?: "ASC" | "DESC";
+  categoryId?: number;
+  categoryName?: string;
 }
 
-export async function listCategoriesPaginated(
-  params?: CategoryListParams
-): Promise<PagedResponse<Category>> {
-  const response = await categoryApi.get<PagedResponse<Category>>("", {
+export async function listSubcategoriesPaginated(
+  params?: SubcategoryListParams
+): Promise<PagedResponse<Subcategory>> {
+  const response = await subcategoryApi.get<PagedResponse<Subcategory>>("", {
     params: {
       page: params?.page ?? 0,
       size: params?.size ?? 10,
-      sortBy: params?.sortBy ?? "name",
-      sortDir: params?.sortDir ?? "ASC",
-      departmentId: params?.departmentId,
-      departmentName: params?.departmentName,
+      categoryId: params?.categoryId,
+      categoryName: params?.categoryName,
     },
   });
   return response.data;
 }
 
-export async function searchCategories(keyword: string): Promise<Category[]> {
-  const response = await categoryApi.get<Category[]>("/search", {
-    params: { keyword },
-  });
-  return response.data;
-}
-
-export async function createCategory(
-  payload: CategoryCreatePayload
-): Promise<Category> {
-  const response = await categoryApi.post<Category>("/create-category", {
+export async function createSubcategory(
+  payload: SubcategoryCreatePayload
+): Promise<Subcategory> {
+  const response = await subcategoryApi.post<Subcategory>("", {
     name: payload.name,
-    departmentId: payload.departmentId,
+    categoryId: payload.categoryId,
   });
   return response.data;
 }
 
-export async function deleteCategory(id: number): Promise<void> {
-  await categoryApi.delete(`/${id}`);
+export async function updateSubcategory(
+  id: number,
+  payload: SubcategoryCreatePayload
+): Promise<Subcategory> {
+  const response = await subcategoryApi.put<Subcategory>(`/update/${id}`, {
+    name: payload.name,
+    categoryId: payload.categoryId,
+  });
+  return response.data;
 }
 
-export async function listCategories(): Promise<Category[]> {
-  const response = await categoryApi.get<Category[]>("/list");
+export async function deleteSubcategory(id: number): Promise<void> {
+  await subcategoryApi.delete(`/delete/${id}`);
+}
+
+export async function getSubcategoryById(id: number): Promise<Subcategory> {
+  const response = await subcategoryApi.get<Subcategory>(`/${id}`);
   return response.data;
 }
 

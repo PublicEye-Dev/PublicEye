@@ -141,7 +141,7 @@ export async function getDepartmentOperator(
 export { departmentApi };
 
 export async function listCategories(): Promise<CategoryOption[]> {
-  const response = await departmentApi.get<CategoryOption[]>("/api/categories");
+  const response = await departmentApi.get<CategoryOption[]>("/api/categories/list");
   return response.data;
 }
 

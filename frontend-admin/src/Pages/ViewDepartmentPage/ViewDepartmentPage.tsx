@@ -17,7 +17,6 @@ import {
 
 const ViewDepartmentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const departmentId = Number(id);
   const navigate = useNavigate();
   const [department, setDepartment] = useState<Department | null>(null);
   const [operator, setOperator] = useState<User | null>(null);
@@ -35,7 +34,8 @@ const ViewDepartmentPage: React.FC = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const loadDepartmentDetails = useCallback(async () => {
-    if (!departmentId) {
+    const deptId = id ? Number(id) : NaN;
+    if (!id || isNaN(deptId) || deptId <= 0) {
       setError("ID-ul departamentului este invalid.");
       setIsLoading(false);
       return;
@@ -45,8 +45,8 @@ const ViewDepartmentPage: React.FC = () => {
     setError(null);
     try {
       const [departmentResponse, operatorResponse] = await Promise.all([
-        getDepartmentById(departmentId),
-        getDepartmentOperator(departmentId),
+        getDepartmentById(deptId),
+        getDepartmentOperator(deptId),
       ]);
       setDepartment(departmentResponse);
       setOperator(operatorResponse);
@@ -59,18 +59,19 @@ const ViewDepartmentPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [departmentId]);
+  }, [id]);
 
   const loadCategories = useCallback(async () => {
     try {
       const categories = await listCategories();
-      setAllCategories(categories);
+      setAllCategories(Array.isArray(categories) ? categories : []);
     } catch (err) {
       setCategoryError(
         err instanceof Error
           ? err.message
           : "Nu s-au putut încărca categoriile."
       );
+      setAllCategories([]);
     }
   }, []);
 
@@ -109,6 +110,7 @@ const ViewDepartmentPage: React.FC = () => {
 
   const availableAddCategories = useMemo(() => {
     if (!department) return [];
+    if (!Array.isArray(allCategories)) return [];
     const assignedIds = new Set(
       department.categories.map((category) => category.id)
     );
@@ -117,6 +119,7 @@ const ViewDepartmentPage: React.FC = () => {
 
   const handleAddCategory = async () => {
     if (!department || !selectedAddCategoryId) return;
+    if (!Array.isArray(allCategories)) return;
     const category = allCategories.find((item) => item.id === selectedAddCategoryId);
     if (!category) return;
     setCategoryError(null);
@@ -160,10 +163,11 @@ const ViewDepartmentPage: React.FC = () => {
   };
 
   const handleDeleteDepartment = async () => {
-    if (!departmentId) return;
+    const deptId = id ? Number(id) : NaN;
+    if (!id || isNaN(deptId) || deptId <= 0) return;
     setIsDeleting(true);
     try {
-      await deleteDepartment(departmentId);
+      await deleteDepartment(deptId);
       navigate("/gestionare-departamente");
     } catch (deleteError) {
       setError(
