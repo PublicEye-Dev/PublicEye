@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
 
                 <button
                   className="dropdown-item"
-                  onClick={() => handleProtectedNav("/adauga-sesizare")}
+                  onClick={() => handleProtectedNav("/")}
                 >
                   Depune sesizare
                 </button>
