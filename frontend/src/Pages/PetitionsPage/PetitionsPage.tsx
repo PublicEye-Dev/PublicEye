@@ -196,6 +196,12 @@ export default function PetitionsPage() {
                       >
                         {votedPetitions.has(p.id) ? "Votat" : "Votează"}
                       </button>
+                      <button
+                        className="back-button"
+                        onClick={() => navigate(`/petitii/${p.id}`)}
+                      >
+                        Detalii
+                      </button>
                     </div>
                   </div>
                 ))}

@@ -8,6 +8,7 @@ import ProfilePage from "./Pages/ProfilePage/ProfilePage";
 import MyReportsPage from "./Pages/MyReportsPage/MyReportsPage";
 import MyPetitionsPage from "./Pages/MyPetitionsPage/MyPetitionsPage";
 import PetitionsPage from "./Pages/PetitionsPage/PetitionsPage";
+import PetitionDetailPage from "./Pages/PetitionDetailPage/PetitionDetailPage";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/sesizarile-mele" element={<MyReportsPage />} />
         <Route path="/petitiile-mele" element={<MyPetitionsPage />} />
         <Route path="/petitii" element={<PetitionsPage />} />
+        <Route path="/petitii/:id" element={<PetitionDetailPage />} />
         <Route path="/" element={<MapPage />} />
       </Routes>
     </BrowserRouter>
