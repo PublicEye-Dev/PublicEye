@@ -4,7 +4,7 @@ Aplicație full‑stack pentru sesizări, petiții și alerte generate cu agent 
 
 ## Stack tehnic
 - Backend: Spring Boot 3, Spring Security (JWT), Hibernate, HikariCP, PostgreSQL
-- Frontend: React + TypeScript (`frontend`) și aplicație separată de admin (`frontend-admin`)
+- Frontend: React + TypeScript (`frontend`) și aplicație separată de admin (`frontend-admin`), Zustand (state management)
 - Build/dev: Node.js (frontend), Maven Wrapper (backend)
 
 ## Structură
