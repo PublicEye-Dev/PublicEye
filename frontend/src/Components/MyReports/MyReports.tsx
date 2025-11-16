@@ -1,132 +1,237 @@
-import React from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import './MyReports.css';
 import { 
   FaCog, 
   FaCheckCircle,
   FaRegClock,     
   FaCalendarAlt, 
-  FaShareSquare, 
-
+  FaShareSquare,
+  FaTimesCircle,
 } from "react-icons/fa";
+import { getUserReports } from '../../Services/reportService';
+import { getUserInfo } from '../../Services/accountService';
+import type { Report, Status } from '../../Types/report';
+
+interface StatusConfig {
+  label: string;
+  icon: ReactElement;
+  statusBarClass: string;
+  iconClass: string;
+}
+
+// Helper function pentru maparea status-urilor
+const getStatusConfig = (status: Status): StatusConfig => {
+  switch (status) {
+    case 'DEPUSA':
+      return {
+        label: 'În așteptare',
+        icon: <FaRegClock />,
+        statusBarClass: 'in-asteptare',
+        iconClass: 'in-asteptare',
+      };
+    case 'PLANIFICATA':
+      return {
+        label: 'Planificată',
+        icon: <FaCalendarAlt />,
+        statusBarClass: 'planificata',
+        iconClass: 'planificata',
+      };
+    case 'IN_LUCRU':
+      return {
+        label: 'În lucru',
+        icon: <FaCog />,
+        statusBarClass: 'in-lucru',
+        iconClass: 'in-lucru',
+      };
+    case 'REZOLVATA':
+      return {
+        label: 'Rezolvată',
+        icon: <FaCheckCircle />,
+        statusBarClass: 'rezolvata',
+        iconClass: 'rezolvata',
+      };
+    case 'REDIRECTIONATA':
+      return {
+        label: 'Redirecționată',
+        icon: <FaShareSquare />,
+        statusBarClass: 'redirectionata',
+        iconClass: 'redirectionata',
+      };
+    case 'RESPINSA':
+      return {
+        label: 'Respinsă',
+        icon: <FaTimesCircle />,
+        statusBarClass: 'respinsa',
+        iconClass: 'respinsa',
+      };
+    default:
+      return {
+        label: 'Necunoscut',
+        icon: <FaRegClock />,
+        statusBarClass: 'in-asteptare',
+        iconClass: 'in-asteptare',
+      };
+  }
+};
+
+// Helper function pentru formatarea ID-ului (SZN2025-019300)
+const formatReportId = (id: number): string => {
+  const currentYear = new Date().getFullYear();
+  const paddedId = String(id).padStart(6, '0');
+  return `SZN${currentYear}-${paddedId}`;
+};
+
+// Helper function pentru formatarea datei (DD.MM.YYYY)
+const formatDate = (dateString: string | undefined): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  } catch (error) {
+    return '';
+  }
+};
 
 const MyReports: React.FC = () => {
-    return(
-<div className="my-reports-page-container">
-  
-  <h2 className="my-reports-title">Sesizările mele</h2>
-  <hr className="title-divider" />
+    const [reports, setReports] = useState<Report[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-  <div className="reports-list-container">
+    useEffect(() => {
+        const fetchUserReports = async () => {
+            setIsLoading(true);
+            setError(null);
 
-    <div className="report-card">
-      <div className="status-bar in-asteptare"></div>
-      <div className="report-content">
-        <div className="report-header">
-          <span className="report-id">SZN2025-019300</span>
-        </div>
-        <h3 className="report-description">
-          Coș de gunoi stradal plin
-        </h3>
-        <span className="report-date-deposited">Depusă la 15.11.2025</span>
-        <div className="report-status">
-          <span className="status-icon in-asteptare">
-            <FaRegClock />
-          </span>
-          <span className="report-status-date">15.11.2025</span>
-          <span>-</span>
-          <span className="report-status-label">În așteptare</span>
-        </div>
-      </div>
-    </div>
+            try {
+                // Obține informațiile utilizatorului curent pentru a lua ID-ul
+                const userInfo = await getUserInfo();
+                
+                // Obține sesizările utilizatorului
+                const userReports = await getUserReports(userInfo.id);
+                
+                // Sortează după data creării (cele mai noi primele)
+                const sortedReports = [...userReports].sort((a, b) => {
+                    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                    return dateB - dateA;
+                });
+                
+                setReports(sortedReports);
+            } catch (err) {
+                const errorMessage = err instanceof Error ? err.message : 'Eroare la încărcarea sesizărilor';
+                setError(errorMessage);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
+        fetchUserReports();
+    }, []);
 
-    <div className="report-card">
-      <div className="status-bar planificata"></div>
-      <div className="report-content">
-        <div className="report-header">
-          <span className="report-id">SZN2025-019288</span>
-        </div>
-        <h3 className="report-description">
-          Solicitare trecere de pietoni suplimentară
-        </h3>
-        <span className="report-date-deposited">Depusă la 14.11.2025</span>
-        <div className="report-status">
-          <span className="status-icon planificata">
-            <FaCalendarAlt /> 
-          </span>
-          <span className="report-status-date">15.11.2025</span>
-          <span>-</span>
-          <span className="report-status-label">Planificată</span>
-        </div>
-      </div>
-    </div>
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="my-reports-page-container">
+                <h2 className="my-reports-title">Sesizările mele</h2>
+                <hr className="title-divider" />
+                <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                    <div className="loading-spinner"></div>
+                    <p style={{ marginTop: '20px', color: '#555' }}>Se încarcă sesizările...</p>
+                </div>
+            </div>
+        );
+    }
 
-    <div className="report-card">
-      <div className="status-bar in-lucru"></div>
-      <div className="report-content">
-        <div className="report-header">
-          <span className="report-id">SZN2025-019245</span>
-        </div>
-        <h3 className="report-description">
-          Lipsa iluminat
-        </h3>
-        <span className="report-date-deposited">Depusă la 13.11.2025</span>
-        <div className="report-status">
-          <span className="status-icon in-lucru">
-            <FaCog /> 
-          </span>
-          <span className="report-status-date">14.11.2025</span>
-          <span>-</span>
-          <span className="report-status-label">În lucru</span>
-        </div>
-      </div>
-    </div>
+    // Error state
+    if (error) {
+        return (
+            <div className="my-reports-page-container">
+                <h2 className="my-reports-title">Sesizările mele</h2>
+                <hr className="title-divider" />
+                <div className="error-message" style={{ 
+                    padding: '20px', 
+                    backgroundColor: '#f8d7da', 
+                    color: '#721c24', 
+                    borderRadius: '8px',
+                    marginTop: '20px'
+                }}>
+                    {error}
+                </div>
+            </div>
+        );
+    }
 
-    <div className="report-card">
-      <div className="status-bar rezolvata"></div>
-      <div className="report-content">
-        <div className="report-header">
-          <span className="report-id">SZN2025-018900</span>
-        </div>
-        <h3 className="report-description">
-          Semnal de pe trecerea de pietoni nu functioneaza
-        </h3>
-        <span className="report-date-deposited">Depusă la 10.11.2025</span>
-        <div className="report-status">
-          <span className="status-icon rezolvata">
-            <FaCheckCircle /> 
-          </span>
-          <span className="report-status-date">11.11.2025</span>
-          <span>-</span>
-          <span className="report-status-label">Rezolvată</span>
-        </div>
-      </div>
-    </div>
+    // Empty state
+    if (reports.length === 0) {
+        return (
+            <div className="my-reports-page-container">
+                <h2 className="my-reports-title">Sesizările mele</h2>
+                <hr className="title-divider" />
+                <div style={{ 
+                    textAlign: 'center', 
+                    padding: '60px 20px',
+                    color: '#666'
+                }}>
+                    <p style={{ fontSize: '1.1rem', marginBottom: '10px' }}>
+                        Nu ați depus nicio sesizare încă
+                    </p>
+                    <p style={{ fontSize: '0.95rem', color: '#888' }}>
+                        Când veți depune sesizări, acestea vor apărea aici
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
-    <div className="report-card">
-      <div className="status-bar redirectionata"></div>
-      <div className="report-content">
-        <div className="report-header">
-          <span className="report-id">SZN2025-018700</span>
-        </div>
-        <h3 className="report-description">
-          Probleme cu rețeaua de gaz
-        </h3>
-        <span className="report-date-deposited">Depusă la 09.11.2025</span>
-        <div className="report-status">
-          <span className="status-icon redirectionata">
-            <FaShareSquare />
-          </span>
-          <span className="report-status-date">09.11.2025</span>
-          <span>-</span>
-          <span className="report-status-label">Redirecționată</span>
-        </div>
-      </div>
-    </div>
+    return (
+        <div className="my-reports-page-container">
+            <h2 className="my-reports-title">Sesizările mele</h2>
+            <hr className="title-divider" />
 
-  </div>
-</div>
+            <div className="reports-list-container">
+                {reports.map((report) => {
+                    const statusConfig = getStatusConfig(report.status);
+                    const createdDate = formatDate(report.createdAt);
+                    const updatedDate = formatDate(report.updatedAt || report.createdAt);
+
+                    return (
+                        <div key={report.id} className="report-card">
+                            <div className={`status-bar ${statusConfig.statusBarClass}`}></div>
+                            <div className="report-content">
+                                <div className="report-header">
+                                    <span className="report-id">{formatReportId(report.id)}</span>
+                                </div>
+                                <h3 className="report-description">
+                                    {report.description}
+                                </h3>
+                                {createdDate && (
+                                    <span className="report-date-deposited">
+                                        Depusă la {createdDate}
+                                    </span>
+                                )}
+                                <div className="report-status">
+                                    <span className={`status-icon ${statusConfig.iconClass}`}>
+                                        {statusConfig.icon}
+                                    </span>
+                                    {updatedDate && (
+                                        <>
+                                            <span className="report-status-date">{updatedDate}</span>
+                                            <span>-</span>
+                                        </>
+                                    )}
+                                    <span className="report-status-label">{statusConfig.label}</span>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
     );
-}
+};
 
 export default MyReports;

@@ -3,7 +3,8 @@ export type Status =
   | "PLANIFICATA"
   | "IN_LUCRU"
   | "REZOLVATA"
-  | "REDIRECTIONATA";
+  | "REDIRECTIONATA"
+  | "RESPINSA";
 
 export interface Report {
   id: number;
