@@ -112,6 +112,13 @@ const Navbar: React.FC = () => {
                 </button>
 
                 <button
+                  className="dropdown-item"
+                  onClick={() => handleProtectedNav("/contul-meu")}
+                >
+                  Contul meu
+                </button>
+
+                <button
                   onClick={handleLogout}
                   className="dropdown-item dropdown-item--button"
                 >

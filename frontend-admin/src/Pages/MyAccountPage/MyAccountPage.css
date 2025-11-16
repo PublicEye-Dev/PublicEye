@@ -1,0 +1,92 @@
+/* Keep consistent spacing and typography with existing pages */
+.my-account-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  padding: 20px;
+}
+
+.my-account-card h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.my-account-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 900px) {
+  .my-account-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.my-account-section {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.my-account-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.my-account-section select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.button-salvare {
+  display: inline-block;
+  background: #1e88e5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin-top: 16px; /* împinge butonul mai jos pe card */
+}
+
+.button-salvare:disabled {
+  background: #9bbde1;
+  cursor: not-allowed;
+}
+
+.my-account-password .form-group:last-of-type {
+  margin-bottom: 16px; /* spațiu suplimentar după ultimul input */
+}
+
+.my-account-password .button-salvare {
+  margin-top: 24px; /* împinge butonul și mai jos în cardul de parolă */
+}
+
+.categories-error {
+  color: #b00020;
+  margin: 8px 0 12px;
+}
+
+.categories-success {
+  color: #2e7d32;
+  margin: 8px 0 12px;
+}
+
+
