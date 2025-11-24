@@ -89,7 +89,4 @@ La fel, ajustează baza URL pentru API dacă e necesar.
   - `npm run build`
   - `npm run preview`
 
-## Licență
-Proiect intern/educațional. Actualizează această secțiune conform politicilor tale.
-
 
