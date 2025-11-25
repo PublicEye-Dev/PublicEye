@@ -43,7 +43,7 @@ export default function App() {
         <Route
           path="/card-control-panel"
           element={
-            <ProtectedRoute roles={["ADMIN"]}>
+            <ProtectedRoute roles={["ADMIN", "OPERATOR"]}>
               <ControlPanelPage />
             </ProtectedRoute>
           }
@@ -84,7 +84,7 @@ export default function App() {
         <Route
           path="/editare-categorie"
           element={
-            <ProtectedRoute roles={["ADMIN"]}>
+            <ProtectedRoute roles={["ADMIN", "OPERATOR"]}>
               <EditCategoryPage />
             </ProtectedRoute>
           }
@@ -100,7 +100,7 @@ export default function App() {
         <Route
           path="/gestionare-categorii"
           element={
-            <ProtectedRoute roles={["ADMIN"]}>
+            <ProtectedRoute roles={["ADMIN", "OPERATOR"]}>
               <ViewAllCategoriesPage />
             </ProtectedRoute>
           }
@@ -108,7 +108,7 @@ export default function App() {
         <Route
           path="/gestionare-subcategorii"
           element={
-            <ProtectedRoute roles={["ADMIN"]}>
+            <ProtectedRoute roles={["ADMIN", "OPERATOR"]}>
               <ViewAllSubcategoriesPage />
             </ProtectedRoute>
           }

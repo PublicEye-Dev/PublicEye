@@ -1,0 +1,7 @@
+"Folosim API-ul Gemini nu doar pentru a citi text, ci pentru a acționa ca un analist de date urban 24/7. Acesta înțelege nuanțele limbajului uman din sesizări și analizează întregul set de date pentru a identifica proactiv riscuri pe care un operator uman le-ar putea rata. Transformăm zgomotul (sesizările cetățenilor) în semnal (alerte de pericol pentru primărie)." - google api gemini
+
+"Integrarea noastră este creativă pentru că mută LLM-ul din rolul pasiv de 'asistent' în rolul proactiv de 'gardian digital' al orașului. Nu este un chatbot. Este un sistem de avertizare timpurie care corelează informații nestructurate de la multipli vectori (cetățenii) pentru a genera informație acționabilă care poate salva vieți sau preveni alergii severe. Am transformat un LLM într-un analist de risc urban." - integration of LLM 
+
+"În loc să ne bazăm doar pe senzori de polen, care măsoară densitatea, noi monitorizăm impactul direct asupra sănătății cetățenilor. Folosim AI-ul Gemini ca pe un 'senzor inteligent' care citește toate sesizările din oraș.
+
+Când detectează o creștere a rapoartelor despre 'alergii', 'strănut' sau 'buruieni înflorite' într-o anumită zonă, AI-ul nostru detectează proactiv o zonă de infestare cu risc ridicat și generează o alertă pentru echipele de intervenție și pentru public. Este un sistem de monitorizare a ambroziei bazat pe feedback-ul uman în timp real." - Ambrozia and allergy detection

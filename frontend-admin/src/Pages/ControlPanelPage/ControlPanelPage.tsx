@@ -10,9 +10,13 @@ import {
   FaTag,
   FaEnvelope,
 } from "react-icons/fa";
+import { useAuthStore } from "../../Store/authStore";
 import "./ControlPanelPage.css";
 
 const ControlPanelPage: React.FC = () => {
+  const { role } = useAuthStore();
+  const isAdmin = role === "ADMIN";
+
   return (
     <div className="page-container">
       <div className="page-navbar">
@@ -21,32 +25,12 @@ const ControlPanelPage: React.FC = () => {
 
       <div className="control-panel-container">
         <div className="control-panel-grid">
+          {/* Carduri comune pentru ADMIN și OPERATOR */}
           <CardControlPanel
             icon={<FaCog />}
             title="Sesizări"
             description="Vezi sesizările"
             to="/sesizari"
-          />
-
-          <CardControlPanel
-            icon={<FaUsers />}
-            title="Gestionare useri"
-            description="Administrează utilizatorii"
-            to="/gestionare-useri"
-          />
-
-          <CardControlPanel
-            icon={<FaBuilding />}
-            title="Gestionare departamente"
-            description="Configurează departamentele"
-            to="/gestionare-departamente"
-          />
-
-          <CardControlPanel
-            icon={<FaChartBar />}
-            title="Creare rapoarte"
-            description="Generează statistici"
-            to="/creare-rapoarte"
           />
 
           <CardControlPanel
@@ -63,12 +47,38 @@ const ControlPanelPage: React.FC = () => {
             to="/gestionare-subcategorii"
           />
 
-          <CardControlPanel
-            icon={<FaEnvelope />}
-            title="Petiții"
-            description="Vezi petițiile primite"
-            to="/petitii-admin"
-          />
+          {/* Carduri doar pentru ADMIN */}
+          {isAdmin && (
+            <>
+              <CardControlPanel
+                icon={<FaUsers />}
+                title="Gestionare useri"
+                description="Administrează utilizatorii"
+                to="/gestionare-useri"
+              />
+
+              <CardControlPanel
+                icon={<FaBuilding />}
+                title="Gestionare departamente"
+                description="Configurează departamentele"
+                to="/gestionare-departamente"
+              />
+
+              <CardControlPanel
+                icon={<FaChartBar />}
+                title="Creare rapoarte"
+                description="Generează statistici"
+                to="/creare-rapoarte"
+              />
+
+              <CardControlPanel
+                icon={<FaEnvelope />}
+                title="Petiții"
+                description="Vezi petițiile primite"
+                to="/petitii-admin"
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
