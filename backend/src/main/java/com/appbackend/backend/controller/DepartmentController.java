@@ -1,19 +1,26 @@
 package com.appbackend.backend.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.appbackend.backend.dto.CategoryResponse;
 import com.appbackend.backend.dto.DepartmentCreateRequest;
 import com.appbackend.backend.dto.DepartmentResponse;
 import com.appbackend.backend.entity.Category;
 import com.appbackend.backend.entity.Department;
 import com.appbackend.backend.service.department.DepartmentService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/departments")
@@ -22,7 +29,7 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     @GetMapping
     public ResponseEntity<List<DepartmentResponse>> getAllDepartments() {
         List<Department> departments = departmentService.getAllDepartment();
